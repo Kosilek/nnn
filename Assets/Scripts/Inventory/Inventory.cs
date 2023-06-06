@@ -1,55 +1,170 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Inventory : Singleton<Inventory>
 {
-    public static List<Item> item;
+    public List<Item> item;
     public List<GameObject> itemPubl;
     public List<Vector3> positionCell;
-    //[SerializeField] private GameObject cellContainer;
-    //public static GameObject saveCellContainer;
+
+    public GameObject panelStatistics;
+    public Text nameItem;
+    public Text lvlItem;
+    public Text description;
+    public GameObject[] nameStatistics;
+    public Text[] txtNameStatistics;
+    public GameObject[] valueStatistics;
+    public Text[] txtValueStatistics;
+
+    private int[] checkStatistics;
 
     protected override void Awake()
     {
         base.Awake();
+
     }
 
     private void Start()
     {
+        checkStatistics = new int[7];
         item = new List<Item>();
         positionCell = new List<Vector3>();
         for (int i = 0; i < itemPubl.Count; i++)
         {
-            //cellContainer.transform.GetChild(i).GetComponent<CurrentItem>().index = i;
             itemPubl[i].GetComponent<CurrentItem>().index = i;
             positionCell.Add(itemPubl[i].transform.position);
-                item.Add(new Item());
+            item.Add(new Item());
         }
-        
+
+        for (int i = 0; i < nameStatistics.Length; i++)
+        {
+            nameStatistics[i].SetActive(false);
+            valueStatistics[i].SetActive(false);
+        }
+
+        Event.OnAddStackableItem.AddListener(AddStackableItem);
+        Event.OnAddUnStackableItem.AddListener(AddUnStackableItem);
     }
 
-   /* public static GameObject GetChild(int index)
+    #region panelStatstics
+    public void panelStatiscticsActive(int index)
     {
-        return saveCellContainer.transform.GetChild(index).gameObject;
-    }*/
+        int value;
+        string nameStatisticsA;
+        float valueStatisticsA;
+        value = checkActiveStatistics(index);
+       // Debug.Log(value);
+        TextMainItem(index);
+        for (int i = 0; i < value; i++)
+        {
+            nameStatistics[i].SetActive(true);
+            valueStatistics[i].SetActive(true);
+            for (int j = 0; j < checkStatistics.Length; j++)
+            {
+                if (checkStatistics[j] != 0)
+                {
+                   // Debug.Log($"j = {j}");
+                    (nameStatisticsA, valueStatisticsA) = AttributeDefinition(j, index);
+                    txtNameStatistics[i].text = nameStatisticsA.ToString();
+                    txtValueStatistics[i].text = valueStatisticsA.ToString();
+                    Debug.Log($"i = {i}, name = {nameStatisticsA}, value = {valueStatisticsA}");
+                    checkStatistics[j] = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void TextMainItem(int index)
+    {
+        nameItem.text = item[index].nameItem.ToString();
+        lvlItem.text = item[index].levelItem.ToString();
+        description.text = item[index].description.ToString();
+    }
+
+    private (string, float) AttributeDefinition(int index, int itemIndex)
+    {
+        string str = "";
+        float f = 0f;
+        switch(index)
+        {
+            case 0:
+                (str, f) = (MeaningString.damage, item[itemIndex].damage);
+                break;
+            case 1:
+                (str, f) = (MeaningString.armor, item[itemIndex].armor);
+                break;
+            case 2:
+                (str, f) = (MeaningString.heatlh, item[itemIndex].heatlh);
+                break;
+            case 3:
+                (str, f) = (MeaningString.resistance, item[itemIndex].resistance);
+                break;
+            case 4:
+                (str, f) = (MeaningString.spike, item[itemIndex].spike);
+                break;
+            case 5:
+                (str, f) = (MeaningString.speed, item[itemIndex].speed);
+                break;
+            case 6:
+                (str, f) = (MeaningString.vampirism, item[itemIndex].vampirism);
+                break;
+        }
+       // Debug.Log($"index = {index}, itemIndex = {itemIndex}, str = {str}, f = {f}");
+        return (str, f);
+    }
+
+    private int checkActiveStatistics(int index)
+    {
+        int value = 0;
+        (checkStatistics[0], checkStatistics[1], checkStatistics[2], checkStatistics[3], checkStatistics[4], checkStatistics[5], checkStatistics[6]) = 
+            (item[index].damageInt, item[index].armorInt, item[index].heatlhInt, item[index].resistanceInt, item[index].spikeInt, item[index].speedInt, item[index].vampirismInt);
+        for (int i = 0; i < checkStatistics.Length; i++)
+        {
+            if (checkStatistics[i] != 0)
+            {
+                value++;
+            }
+        }
+        return value;
+    }
+
+    public void DeleteArray()
+    {
+        for (int i = 0; i < checkStatistics.Length; i++)
+        {
+            if (checkStatistics[i] != 0)
+            {
+                checkStatistics[i] = 0;
+            }
+        }
+        for(int i = 0; i < nameStatistics.Length; i++)
+        {
+            nameStatistics[i].SetActive(false);
+            valueStatistics[i].SetActive(false);
+        }
+    }
+    #endregion
 
     public static void PickupTrigger(GameObject items, bool isStackable, int id, int itemCount)
     {
         if (isStackable)
         {
-            AddStackableItem(items, id, itemCount);
+            Event.SendAddStackableItem(items, id, itemCount);
         }
         else if (!isStackable)
         {
-            AddUnStackableItem(items);
+           Event.SendAddUnStackableItem(items);
         }
     }
 
-    private static void AddStackableItem(GameObject items, int id, int itemCount)
+    private void AddStackableItem(GameObject items, int id, int itemCount)
     {
-        for (int i = 0; i < item.Count; i++)
+        for (int i = 0; i < item.Count - 9; i++)
         {
             if (item[i].id == id)
             {
@@ -61,9 +176,9 @@ public class Inventory : Singleton<Inventory>
         AddUnStackableItem(items);
     }
 
-    private static void AddUnStackableItem(GameObject items)
+    private void AddUnStackableItem(GameObject items)
     {
-        for (int i = 0; i < item.Count; i++)
+        for (int i = 0; i < item.Count - 9; i++)
         {
             if (item[i].id == 0)
             {
@@ -74,7 +189,7 @@ public class Inventory : Singleton<Inventory>
         }
     }
 
-    public static void DeleteItem(int index, GameObject icon, Text txt, GameObject answer)
+    public void DeleteItem(int index, GameObject icon, Text txt, GameObject answer)
     {
         item[index].id = 0;
         icon.GetComponent<Image>().enabled = false;
@@ -87,7 +202,6 @@ public class Inventory : Singleton<Inventory>
     {
         for (int i = 0; i < item.Count; i++)
         {
-            //Transform cell = cellContainer.transform.GetChild(i);
             Transform cell = itemPubl[i].transform;
             Transform icon = cell.GetChild(0);
             Transform count = icon.GetChild(0);
@@ -113,5 +227,16 @@ public class Inventory : Singleton<Inventory>
                 txt.text = null;
             }
         }
+    }
+
+    public void LoadData(Save.itemSaveData save, int index)
+    {
+         item[index].typeItem = save.typeItem;
+         item[index].nameItem = save.nameItem;
+         item[index].id = save.id;
+         item[index].countItem = save.countItem;
+         item[index].isStackable = save.isStackable;
+         item[index].pathIcon = save.pathIcon;
+         item[index].pathPrefab = save.pathPrefab;
     }
 }

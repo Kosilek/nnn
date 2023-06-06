@@ -98,13 +98,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 488e4827392401d4f83927d54c8337da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  typeItem: 8
   nameItem: Apple
   id: 2
   countItem: 0
   isStackable: 1
   pathIcon: Icons/Apple
   pathPrefab: Prefabe/Apple
-  saveCount: 5
 --- !u!58 &900401955
 CircleCollider2D:
   m_ObjectHideFlags: 0

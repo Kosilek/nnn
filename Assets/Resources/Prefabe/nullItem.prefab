@@ -97,10 +97,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 488e4827392401d4f83927d54c8337da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  typeItem: 8
   nameItem: 
   id: 0
   countItem: 2
   isStackable: 0
   pathIcon: 
   pathPrefab: 
-  saveCount: 0

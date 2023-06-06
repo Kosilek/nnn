@@ -98,13 +98,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 488e4827392401d4f83927d54c8337da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelItem: 0
   nameItem: sword1
   id: 1
-  countItem: 2
+  countItem: 1
   isStackable: 0
   pathIcon: Icons/sword1
   pathPrefab: Prefabe/sword1
-  saveCount: 1
+  customizable: 0
+  description: 
+  typeItem: 0
+  damage: 0
+  armor: 0
+  heatlh: 0
+  resistance: 0
+  spike: 0
+  speed: 0
+  vampirism: 0
+  typeRest: 0
+  treatment: 0
+  damageBool: 0
+  armorBool: 0
+  heatlhBool: 0
+  resistanceBool: 0
+  spikeBool: 0
+  speedBool: 0
+  vampirismBool: 0
 --- !u!61 &368151784064751263
 BoxCollider2D:
   m_ObjectHideFlags: 0
