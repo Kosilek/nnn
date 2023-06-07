@@ -85,7 +85,7 @@ public class Item : MonoBehaviour
     public int speedInt = 0;
     public int vampirismInt = 0;
     #endregion
-
+    
     private void Start()
     {
         if (customizable == true)
@@ -363,6 +363,7 @@ public class Item : MonoBehaviour
 
     private void InstallAtrributesStaticsWeapon()
     {
+        damageInt += 1;
         int value = 0;
         if (damageInt != 0)
         {

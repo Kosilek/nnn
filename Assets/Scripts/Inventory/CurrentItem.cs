@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-  //  [HideInInspector]
+    //[HideInInspector]
     public int index;
     [SerializeField]private TypeItem type;
     [SerializeField] private GameObject delete;
@@ -41,7 +41,6 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
         inventory.panelStatistics.SetActive(false);
         inventory.DeleteArray();
     }
-
 
     public void OnActiveDeleteItem()
     {
@@ -130,54 +129,63 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     {
         if (inventory.item.Count - 9 <= oldIndex && oldIndex < inventory.item.Count)
         {
+            Debug.Log("ReItem if");
             ReItemIndex(oldIndex, newIndex, true);
-           // Debug.Log("ReItem if");
         }
         else if (newIndex < inventory.item.Count - 9)
         {
+            Debug.Log("ReItem if else if");
             ReItemIndex(oldIndex, newIndex, false);
-           // Debug.Log("ReItem if else if");
         } 
         else if (inventory.item.Count - 9 <= newIndex && newIndex < inventory.item.Count)
-        {          
-                CheckItemPlayer(oldIndex, newIndex);
-           // Debug.Log("ReItem if else if else if");
+        {
+            Debug.Log("ReItem if else if else if");
+            CheckItemPlayer(oldIndex, newIndex);        
         }
         ReDisplay(oldIndex, newIndex);
     }
 
     private void CheckItemPlayer(int oldIndex, int newIndex)
     {
+        Debug.Log("CheckItemPlayer");
         switch (newIndex)
         {
             case 36:
-                CheckItemType(oldIndex, newIndex, TypeItem.weapon);
+                Event.SendReWeapon(inventory.item[oldIndex].damage, inventory.item[oldIndex].vampirism);
+                CheckItemType(oldIndex, newIndex, TypeItem.weapon);           
                 break;
             case 37:
+                Event.SendReHelmet(inventory.item[oldIndex].armor, inventory.item[oldIndex].heatlh, inventory.item[oldIndex].spike);
                 CheckItemType(oldIndex, newIndex, TypeItem.helmet);
                 break;
             case 38:
+                Event.SendReBib(inventory.item[oldIndex].armor, inventory.item[oldIndex].heatlh, inventory.item[oldIndex].spike);
                 CheckItemType(oldIndex, newIndex, TypeItem.bib);
                 break;
             case 39:
+                Event.SendReGloves(inventory.item[oldIndex].armor, inventory.item[oldIndex].heatlh, inventory.item[oldIndex].spike);
                 CheckItemType(oldIndex, newIndex, TypeItem.gloves);
                 break;
             case 40:
+                Event.SendReBoots(inventory.item[oldIndex].armor, inventory.item[oldIndex].heatlh, inventory.item[oldIndex].spike, inventory.item[oldIndex].speed);
                 CheckItemType(oldIndex, newIndex, TypeItem.boots);
                 break;
             case 41:
+                Event.SendReAmulet(inventory.item[oldIndex].heatlh, inventory.item[oldIndex].resistance);
                 CheckItemType(oldIndex, newIndex, TypeItem.amulet);
                 break;
             case 42:
+                Event.SendReRing1(inventory.item[oldIndex].heatlh, inventory.item[oldIndex].resistance);
                 CheckItemType(oldIndex, newIndex, TypeItem.ring);
                 break;
             case 43:
+                Event.SendReRing2(inventory.item[oldIndex].heatlh, inventory.item[oldIndex].resistance);
                 CheckItemType(oldIndex, newIndex, TypeItem.ring);
                 break;
             case 44:
+                Event.SendReBracelete(inventory.item[oldIndex].heatlh, inventory.item[oldIndex].resistance);
                 CheckItemType(oldIndex, newIndex, TypeItem.bracelete);
                 break;
-
         }
     }
 
@@ -185,13 +193,13 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     {
         if (inventory.item[oldIndex].typeItem == type)
         {
-            CheckTheSameId(oldIndex, newIndex);
             Debug.Log("CheckItemType if");
+            CheckTheSameId(oldIndex, newIndex);
         }
         else
         {
-            ReturnItem(oldIndex);
             Debug.Log("CheckItemType else");
+            ReturnItem(oldIndex);
         }
     }
 
@@ -199,11 +207,11 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     {
         if (inventory.item[oldIndex].id == inventory.item[newIndex].id && inventory.item[oldIndex].isStackable == true)
         {
+            Debug.Log("ReItemIndex if");
             inventory.item[newIndex].countItem += inventory.item[oldIndex].countItem;
             inventory.DeleteItem(oldIndex, inventory.itemPubl[oldIndex].GetComponent<CurrentItem>().icon,
                 inventory.itemPubl[oldIndex].GetComponent<CurrentItem>().txt,
                 inventory.itemPubl[oldIndex].GetComponent<CurrentItem>().answer);
-           // Debug.Log("ReItemIndex if");
         }
         else 
         {
@@ -214,28 +222,63 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
                     {
                         if (inventory.itemPubl[newIndex].GetComponent<CurrentItem>().type == TypeItem.rest)
                         {
+                            Debug.Log("ReItemIndex if else switch true if");
+                            ReItemSwitch(oldIndex, newIndex);
                             CheckTheSameId(oldIndex, newIndex);
-                         //   Debug.Log("ReItemIndex if else switch true if");
                         } 
                         else if (inventory.itemPubl[newIndex].GetComponent<CurrentItem>().type != TypeItem.rest)
                         {
+                            Debug.Log("ReItemIndex if else switch true else if");
                             ReturnItem(oldIndex);
-                        //    Debug.Log("ReItemIndex if else switch true else if");
                         }
                         
                     }
                     else if (inventory.item[newIndex].id != 0)
                     {
+                        Debug.Log("ReItemIndex if else switch true if else if");
                         ReturnItem(oldIndex);
-                     //   Debug.Log("ReItemIndex if else switch true if else if");
                     }
                     break;
                 case false:
+                    Debug.Log("\"ReItemIndex if else switch false");
                     CheckTheSameId(oldIndex, newIndex);
-                   // Debug.Log("\"ReItemIndex if else switch false");
                     break;
             }
             
+        }
+    }
+
+    private void ReItemSwitch(int oldIndex, int newIndex)
+    {
+        switch (oldIndex)
+        {
+            case 36:
+                Event.SendReWeapon(inventory.item[newIndex].damage, inventory.item[newIndex].vampirism);
+                break;
+            case 37:
+                Event.SendReHelmet(inventory.item[newIndex].armor, inventory.item[newIndex].heatlh, inventory.item[newIndex].spike);
+                break;
+            case 38:
+                Event.SendReBib(inventory.item[newIndex].armor, inventory.item[newIndex].heatlh, inventory.item[newIndex].spike);
+                break;
+            case 39:
+                Event.SendReGloves(inventory.item[newIndex].armor, inventory.item[newIndex].heatlh, inventory.item[newIndex].spike);
+                break;
+            case 40:
+                Event.SendReBoots(inventory.item[newIndex].armor, inventory.item[newIndex].heatlh, inventory.item[newIndex].spike, inventory.item[newIndex].speed);
+                break;
+            case 41:
+                Event.SendReAmulet(inventory.item[newIndex].heatlh, inventory.item[newIndex].resistance);
+                break;
+            case 42:
+                Event.SendReRing1(inventory.item[newIndex].heatlh, inventory.item[newIndex].resistance);
+                break;
+            case 43:
+                Event.SendReRing2(inventory.item[newIndex].heatlh, inventory.item[newIndex].resistance);
+                break;
+            case 44:
+                Event.SendReBracelete(inventory.item[newIndex].heatlh, inventory.item[newIndex].resistance);
+                break;
         }
     }
 
@@ -243,17 +286,17 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     {
             if (inventory.item[oldIndex].id == inventory.item[newIndex].id)
             {
-                (inventory.item[oldIndex], inventory.item[newIndex]) = (inventory.item[newIndex], inventory.item[oldIndex]);
+            Debug.Log("CheckTheSameId if");
+            (inventory.item[oldIndex], inventory.item[newIndex]) = (inventory.item[newIndex], inventory.item[oldIndex]);
                 inventory.itemPubl[oldIndex].transform.position = inventory.positionCell[oldIndex];
                 inventory.itemPubl[newIndex].transform.position = inventory.positionCell[newIndex];
-      //     Debug.Log("CheckTheSameId if");
             }
             else if (inventory.item[oldIndex].id != inventory.item[newIndex].id)
             {
-                (inventory.item[oldIndex], inventory.item[newIndex]) = (inventory.item[newIndex], inventory.item[oldIndex]);
+            Debug.Log("CheckTheSameId if else if");
+            (inventory.item[oldIndex], inventory.item[newIndex]) = (inventory.item[newIndex], inventory.item[oldIndex]);
                 inventory.itemPubl[oldIndex].transform.position = inventory.positionCell[oldIndex];
                 inventory.itemPubl[newIndex].transform.position = inventory.positionCell[newIndex];
-          //  Debug.Log("CheckTheSameId if else if");
         }     
     }
 

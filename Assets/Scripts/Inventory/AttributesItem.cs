@@ -70,8 +70,8 @@ public class AttributesItem
         switch (type)
         {
             case MeaningString.weapon:
-                min = 10;
-                max = 20;
+                min = 7;
+                max = 14;
                 break;
             case MeaningString.armor:
                 min = 5;

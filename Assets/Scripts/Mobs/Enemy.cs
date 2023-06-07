@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     private int countSouls;
     private int minRand;
     [SerializeField] private int lvlMonstor;
+    [SerializeField] private GameObject[] dropItem;
 
     private void Start()
     {
@@ -18,5 +19,10 @@ public class Enemy : MonoBehaviour
     public void AddSoulsCoins()
     {
         Event.SendScoreCoinsSouls(countSouls);
+    }
+    
+    public void DropItem()
+    {
+        Instantiate(dropItem[0], transform.position, transform.rotation);
     }
 }

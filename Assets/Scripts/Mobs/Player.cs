@@ -6,7 +6,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     //переменные связанные с упр персонажа
-    [SerializeField] private float speed;
+    private float speed;
+    [SerializeField] private float baseSpeed;
     [SerializeField] private float vSpeed;
     private float direction;
     // булевы переменные для проверок
@@ -26,8 +27,10 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        speed = baseSpeed;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        //Event.OnReSpeed.AddListener(ReSpeed);
     }
 
     private void Update()
@@ -54,6 +57,11 @@ public class Player : MonoBehaviour
             facingRight = Character.Flip(transform, facingRight);
         }
     }
+
+   /* public void ReSpeed(float reSpeed)
+    {
+        speed += baseSpeed + reSpeed;
+    }*/
 
     //управление
     #region Controll 
