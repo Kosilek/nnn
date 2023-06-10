@@ -7,8 +7,7 @@ using UnityEngine.Tilemaps;
 
 public class DamageObject : MonoBehaviour
 {
-    [SerializeField] private float baseDamage;
-    public float damage;// potom skrit
+    public float damage;
     [Space(5)]
     [Header("Player?")]
     #region Player?
@@ -16,10 +15,6 @@ public class DamageObject : MonoBehaviour
     #endregion
     [Space(5)]
     [Header("Type Damage")]
-    #region TypeDamge
-    [SerializeField] private bool physical;
-    [SerializeField] private bool magic;
-    #endregion
     [Space(5)]
     [Header("typeMagic")]
     #region TypeMagic
@@ -45,7 +40,7 @@ public class DamageObject : MonoBehaviour
 
     private void Start()
     {
-        damage = baseDamage;
+        Event.OnReDamage.AddListener(ReDamage);
     }
 
     private void SwitchTypeMagic(bool poison, bool fire, bool electric, Collider2D other)
@@ -89,8 +84,14 @@ public class DamageObject : MonoBehaviour
     {
         if (other.GetComponent<Health>())
         {
-            SwitchTypeMagic(poison, fire, electric, other);
-            other.GetComponent<Health>().TakeDamage(damage, other.gameObject, other.gameObject.GetComponent<Health>().anim);
+            if (poison != false || fire != false || electric != false)
+            {
+                SwitchTypeMagic(poison, fire, electric, other);
+            }
+            if (damage >= 0)
+            {
+                other.GetComponent<Health>().TakeDamage(damage, other.gameObject, other.gameObject.GetComponent<Health>().anim);
+            }
             Debug.Log("Attack");
         }
         if (other.GetComponent<Collider2D>() != null)
@@ -136,8 +137,8 @@ public class DamageObject : MonoBehaviour
         }
     }
     #endregion
-    /* public void ReDamage(float reDamage)
+    public void ReDamage(float oldDamage, float newDamage)
     {
-        damage = baseDamage + reDamage;
-    }*/
+        damage = damage - oldDamage + newDamage;
+    }
 }

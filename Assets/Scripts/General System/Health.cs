@@ -1,33 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    private float health;
     public Animator anim;
     #region StatPers
-    [SerializeField] private float damage;
-    [SerializeField] private float health;
+    [SerializeField] private float maxHealth;
     [SerializeField] private float armor;
     [SerializeField] private float resistance;
     [SerializeField] private float spike;
-    [SerializeField] private float speed;
     [SerializeField] private float vampirizme;
     #endregion
     [SerializeField] Image hpBar;
     private float fill = 1f;
     [Space(10)]
-    [Header("Main Stat")]
-    #region MainStat
-    [SerializeField] private float baseHealth;
-    [SerializeField] private float baseArmor;
-    [SerializeField] private float baseResistance;
-    [SerializeField] private float baseSpike;
-    [SerializeField] private float baseVampirizme;
-    #endregion
-    [Space(5)]
     [Header("Immunity")]
     #region Immunity
     [SerializeField] private bool immunPosion;
@@ -46,7 +37,7 @@ public class Health : MonoBehaviour
     private float valueElectric;
     private float saveArmor;
     #endregion
-    #region TemporaryVariables
+   /* #region TemporaryVariables
     private float temporaryDamage = 0;
 
     private float temporaryArmorHelmet = 0;
@@ -76,26 +67,19 @@ public class Health : MonoBehaviour
     private float temporarySpeedBoots = 0;
 
     private float temporaryVampirism = 0;
-    #endregion
+    #endregion*/
     private void Start()
     {
+        health = maxHealth;
         timerStartElectric = 0f;
         timerStartPoison = 0f;
-        health = baseHealth;
-        armor = baseArmor;
-        saveArmor = armor;
-        resistance = baseResistance;
-        spike = baseSpike;
-        vampirizme = baseVampirizme;
-        Event.OnReWeapon.AddListener(ReWeapon);
-        Event.OnReHelmet.AddListener(ReHelmet);
-        Event.OnReBib.AddListener(ReBib);
-        Event.OnReGloves.AddListener(ReGloves);
-        Event.OnReBoots.AddListener(ReBoots);
-        Event.OnReAmulet.AddListener(ReAmulet);
-        Event.OnReRing1.AddListener(ReRing1);
-        Event.OnReRing2.AddListener(ReRing2);
-        Event.OnReBracelete.AddListener(ReBracelete);
+        Event.OnReArmor.AddListener(ReArmor);
+        Event.OnReHealth.AddListener(ReHealth);
+        Event.OnReResistiance.AddListener(ReResistiance);
+        Event.OnReSpike.AddListener(ReSpike);
+        Event.OnReVampirism.AddListener(ReVampirism);
+       /* Event.OnReRing2.AddListener(ReRing2);
+        Event.OnReBracelete.AddListener(ReBracelete);*/
     }
 
     private void Update()
@@ -211,7 +195,7 @@ public class Health : MonoBehaviour
     public void ImageFill()
     {
         hpBar.fillAmount = fill;
-        fill = ((health * 100) / baseHealth) / 100;
+        fill = ((health * 100) / maxHealth) / 100;
     }
 
     private void Damage(GameObject gameObject, Animator anim, float damage)
@@ -242,7 +226,33 @@ public class Health : MonoBehaviour
      //   anim.SetBool(MeaningString.hit, false);
     }
     #region EventReIten
-    public void ReWeapon(float damage, float vampirism)
+
+    public void ReArmor(float oldArmor, float newArmor)
+    {
+        armor = armor - oldArmor + newArmor;
+    }
+
+    public void ReHealth(float oldHealth, float newHealth)
+    {
+        health = health - oldHealth + newHealth;
+        maxHealth = maxHealth - oldHealth + newHealth;
+    }
+
+    public void ReResistiance(float oldResist, float newResist)
+    {
+        resistance = resistance - oldResist + newResist;
+    }
+
+    public void ReSpike(float oldSpike, float newSpike)
+    {
+        spike = spike - oldSpike + newSpike;
+    }
+
+    public void ReVampirism(float oldVampirism, float newVampirism)
+    {
+        vampirizme = vampirizme - oldVampirism + newVampirism;
+    }
+    /*public void ReWeapon(float damage, float vampirism)
     {
         this.damage = this.damage + damage - temporaryDamage;
         this.vampirizme = this.vampirizme + vampirism - temporaryVampirism;
@@ -330,6 +340,6 @@ public class Health : MonoBehaviour
         this.health = this.health + health - temporaryHealthBracelete;
         temporaryHealthBracelete = health;
         temporaryResistanceBracelete = resistance;
-    }
+    }*/
     #endregion
 }

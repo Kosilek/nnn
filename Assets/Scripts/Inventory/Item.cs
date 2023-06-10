@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    public int indexDropItem;
     GeneralActive ga = new GeneralActive();
     AttributesItem aT = new AttributesItem();
     [HideInInspector]public int valueAttributes;
     private int lenghtAttributes;
-
     [Space]
     [Header("MainVariables")]
     #region MainVariables
@@ -23,6 +23,7 @@ public class Item : MonoBehaviour
     public string pathIcon;
     public string pathPrefab;
     public bool customizable;
+    public bool dropItemBool;
     [TextArea]
     public string description;
     #endregion
@@ -41,7 +42,7 @@ public class Item : MonoBehaviour
     [Tooltip("TypeItem helmet, bib, gloves, boots")]
     public float armor;
     [Tooltip("TypeItem helmet, bib, gloves, boots, ring, amulet, bracelete")]
-    public float heatlh;
+    public float health;
     [Tooltip("TypeItem ring, amulet, bracelete")]
     public float resistance;
     [Tooltip("TypeItem helmet, bib, gloves, boots")]
@@ -70,7 +71,7 @@ public class Item : MonoBehaviour
     #region BoolAttributes
     public bool damageBool = false;
     public bool armorBool = false;
-    public bool heatlhBool = false;
+    public bool healthBool = false;
     public bool resistanceBool = false;
     public bool spikeBool = false;
     public bool speedBool = false;
@@ -79,15 +80,20 @@ public class Item : MonoBehaviour
     [Header("if (customizable == true)")]
     public int damageInt = 0;
     public int armorInt = 0;
-    public int heatlhInt = 0;
+    public int healthInt = 0;
     public int resistanceInt = 0;
     public int spikeInt = 0;
     public int speedInt = 0;
     public int vampirismInt = 0;
     #endregion
-    
+
     private void Start()
     {
+        if (dropItemBool)
+        {
+            Event.SendDropItem(gameObject);
+            Event.SendInstIndexDropItem();
+        }
         if (customizable == true)
         {
             return;
@@ -165,7 +171,7 @@ public class Item : MonoBehaviour
                 armorInt++;
                 break;
             case 1:
-                heatlhInt++;
+                healthInt++;
                 break;
             case 2:
                 spikeInt++;
@@ -184,7 +190,7 @@ public class Item : MonoBehaviour
                 armorInt++;
                 break;
             case 1:
-                heatlhInt++;
+                healthInt++;
                 break;
             case 2:
                 spikeInt++;
@@ -203,7 +209,7 @@ public class Item : MonoBehaviour
                 armorInt++;
                 break;
             case 1:
-                heatlhInt++;
+                healthInt++;
                 break;
             case 2:
                 spikeInt++;
@@ -222,7 +228,7 @@ public class Item : MonoBehaviour
                 armorInt++;
                 break;
             case 1:
-                heatlhInt++;
+                healthInt++;
                 break;
             case 2:
                 spikeInt++;
@@ -244,7 +250,7 @@ public class Item : MonoBehaviour
                 resistanceInt++;
                 break;
             case 1:
-                heatlhInt++;
+                healthInt++;
                 break;
         }
         lenghtAttributes++;
@@ -260,7 +266,7 @@ public class Item : MonoBehaviour
                 resistanceInt++;
                 break;
             case 1:
-                heatlhInt++;
+                healthInt++;
                 break;
         }
         lenghtAttributes++;
@@ -276,7 +282,7 @@ public class Item : MonoBehaviour
                 resistanceInt++;
                 break;
             case 1:
-                heatlhInt++;
+                healthInt++;
                 break;
         }
         lenghtAttributes++;
@@ -292,36 +298,36 @@ public class Item : MonoBehaviour
                 break;
             case TypeItem.helmet:
                 armorBool = true;
-                heatlhBool = true;
+                healthBool = true;
                 spikeBool = true;  
                 break;
             case TypeItem.bib:
                 armorBool = true;
-                heatlhBool = true;
+                healthBool = true;
                 spikeBool = true;
                 break;
             case TypeItem.gloves:
                 armorBool = true;
-                heatlhBool = true;
+                healthBool = true;
                 spikeBool = true;
                 break;
             case TypeItem.boots:
                 armorBool = true;
-                heatlhBool = true;
+                healthBool = true;
                 spikeBool = true;
                 speedBool = true;
                 break;
             case TypeItem.amulet:
                 resistanceBool = true;
-                heatlhBool= true;
+                healthBool = true;
                 break;
             case TypeItem.ring:
                 resistanceBool = true;
-                heatlhBool = true;
+                healthBool = true;
                 break;
             case TypeItem.bracelete:
                 resistanceBool = true;
-                heatlhBool = true;
+                healthBool = true;
                 break;
                 default: break;
         }
@@ -396,12 +402,12 @@ public class Item : MonoBehaviour
             }
         }
         value = 0;
-        if (heatlhInt != 0)
+        if (healthInt != 0)
         {
-            value = heatlhInt;
+            value = healthInt;
             for (int i = 0; i < value; i++)
             {
-                heatlh += aT.Heathl(levelItem);
+                health += aT.Heathl(levelItem);
             }
         }
         value = 0;
@@ -427,12 +433,12 @@ public class Item : MonoBehaviour
             }
         }
         value = 0;
-        if (heatlhInt != 0)
+        if (healthInt != 0)
         {
-            value = heatlhInt;
+            value = healthInt;
             for (int i = 0; i < value; i++)
             {
-                heatlh += aT.Heathl(levelItem);
+                health += aT.Heathl(levelItem);
             }
         }
         value = 0;
@@ -458,12 +464,12 @@ public class Item : MonoBehaviour
             }
         }
         value = 0;
-        if (heatlhInt != 0)
+        if (healthInt != 0)
         {
-            value = heatlhInt;
+            value = healthInt;
             for (int i = 0; i < value; i++)
             {
-                heatlh += aT.Heathl(levelItem);
+                health += aT.Heathl(levelItem);
             }
         }
         value = 0;
@@ -489,12 +495,12 @@ public class Item : MonoBehaviour
             }
         }
         value = 0;
-        if (heatlhInt != 0)
+        if (healthInt != 0)
         {
-            value = heatlhInt;
+            value = healthInt;
             for (int i = 0; i < value; i++)
             {
-                heatlh += aT.Heathl(levelItem);
+                health += aT.Heathl(levelItem);
             }
         }
         value = 0;
@@ -529,12 +535,12 @@ public class Item : MonoBehaviour
             }
         }
         value = 0;
-        if (heatlhInt != 0)
+        if (healthInt != 0)
         {
-            value = heatlhInt;
+            value = healthInt;
             for (int i = 0; i < value; i++)
             {
-                heatlh += aT.Heathl(levelItem);
+                health += aT.Heathl(levelItem);
             }
         }
     }
@@ -551,12 +557,12 @@ public class Item : MonoBehaviour
             }
         }
         value = 0;
-        if (heatlhInt != 0)
+        if (healthInt != 0)
         {
-            value = heatlhInt;
+            value = healthInt;
             for (int i = 0; i < value; i++)
             {
-                heatlh += aT.Heathl(levelItem);
+                health += aT.Heathl(levelItem);
             }
         }
     }
@@ -573,12 +579,12 @@ public class Item : MonoBehaviour
             }
         }
         value = 0;
-        if (heatlhInt != 0)
+        if (healthInt != 0)
         {
-            value = heatlhInt;
+            value = healthInt;
             for (int i = 0; i < value; i++)
             {
-                heatlh += aT.Heathl(levelItem);
+                health += aT.Heathl(levelItem);
             }
         }
     }
@@ -588,10 +594,11 @@ public class Item : MonoBehaviour
     {
         if (collision.GetComponent<Player>())
         {
+            Event.SendRemoveDropItem(indexDropItem);
+            Event.SendInstIndexDropItem();
             Inventory.PickupTrigger(gameObject, isStackable, id, countItem);
         }
-    }   
-
+    }
 }
 public enum TypeItem
 {

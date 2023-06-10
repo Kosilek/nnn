@@ -23,6 +23,7 @@ public class Enemy : MonoBehaviour
     
     public void DropItem()
     {
+        dropItem[0].GetComponent<Item>().dropItemBool = true;
         Instantiate(dropItem[0], transform.position, transform.rotation);
     }
 }

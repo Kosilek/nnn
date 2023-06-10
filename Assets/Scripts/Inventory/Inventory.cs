@@ -99,7 +99,7 @@ public class Inventory : Singleton<Inventory>
                 (str, f) = (MeaningString.armor, item[itemIndex].armor);
                 break;
             case 2:
-                (str, f) = (MeaningString.heatlh, item[itemIndex].heatlh);
+                (str, f) = (MeaningString.heatlh, item[itemIndex].health);
                 break;
             case 3:
                 (str, f) = (MeaningString.resistance, item[itemIndex].resistance);
@@ -114,7 +114,6 @@ public class Inventory : Singleton<Inventory>
                 (str, f) = (MeaningString.vampirism, item[itemIndex].vampirism);
                 break;
         }
-       // Debug.Log($"index = {index}, itemIndex = {itemIndex}, str = {str}, f = {f}");
         return (str, f);
     }
 
@@ -122,7 +121,7 @@ public class Inventory : Singleton<Inventory>
     {
         int value = 0;
         (checkStatistics[0], checkStatistics[1], checkStatistics[2], checkStatistics[3], checkStatistics[4], checkStatistics[5], checkStatistics[6]) = 
-            (item[index].damageInt, item[index].armorInt, item[index].heatlhInt, item[index].resistanceInt, item[index].spikeInt, item[index].speedInt, item[index].vampirismInt);
+            (item[index].damageInt, item[index].armorInt, item[index].healthInt, item[index].resistanceInt, item[index].spikeInt, item[index].speedInt, item[index].vampirismInt);
         for (int i = 0; i < checkStatistics.Length; i++)
         {
             if (checkStatistics[i] != 0)
@@ -231,12 +230,37 @@ public class Inventory : Singleton<Inventory>
 
     public void LoadData(Save.itemSaveData save, int index)
     {
-         item[index].typeItem = save.typeItem;
-         item[index].nameItem = save.nameItem;
-         item[index].id = save.id;
-         item[index].countItem = save.countItem;
-         item[index].isStackable = save.isStackable;
-         item[index].pathIcon = save.pathIcon;
-         item[index].pathPrefab = save.pathPrefab;
+        item[index].typeItem = save.typeItem;
+        item[index].levelItem = save.levelItem;
+        item[index].nameItem = save.nameItem;
+        item[index].id = save.id;
+        item[index].countItem = save.countItem;
+        item[index].isStackable = save.isStackable;
+        item[index].pathIcon = save.pathIcon;
+        item[index].pathPrefab = save.pathPrefab;
+        item[index].customizable = save.customizable;
+        item[index].description = save.description;
+        item[index].damage = save.damage;
+        item[index].armor = save.armor;
+        item[index].health = save.health;
+        item[index].resistance = save.resistance;
+        item[index].spike = save.spike;
+        item[index].speed = save.speed;
+        item[index].vampirism = save.vampirism;
+        item[index].typeRest = save.typeRest;
+        item[index].damageBool = save.damageBool;
+        item[index].armorBool = save.armorBool;
+        item[index].healthBool = save.healthBool;
+        item[index].resistanceBool = save.resistanceBool;
+        item[index].spikeBool = save.spikeBool;
+        item[index].speedBool = save.speedBool;
+        item[index].vampirismBool = save.vampirismBool;
+        item[index].damageInt = save.damageInt;
+        item[index].armorInt = save.armorInt;
+        item[index].healthInt = save.healthInt;
+        item[index].resistanceInt = save.resistanceInt;
+        item[index].spikeInt = save.spikeInt;
+        item[index].speedInt = save.speedInt;
+        item[index].vampirismInt = save.vampirismInt;
     }
 }

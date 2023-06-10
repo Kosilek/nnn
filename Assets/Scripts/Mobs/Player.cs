@@ -6,8 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     //переменные связанные с упр персонажа
-    private float speed;
-    [SerializeField] private float baseSpeed;
+    [SerializeField]private float speed;
     [SerializeField] private float vSpeed;
     private float direction;
     // булевы переменные для проверок
@@ -27,9 +26,9 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        speed = baseSpeed;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        Event.OnReSpeed.AddListener(ReSpeed);
         //Event.OnReSpeed.AddListener(ReSpeed);
     }
 
@@ -58,11 +57,15 @@ public class Player : MonoBehaviour
         }
     }
 
-   /* public void ReSpeed(float reSpeed)
-    {
-        speed += baseSpeed + reSpeed;
-    }*/
+    /* public void ReSpeed(float reSpeed)
+     {
+         speed += baseSpeed + reSpeed;
+     }*/
 
+    public void ReSpeed(float oldSpeed, float newSpeed)
+    {
+        speed = speed - oldSpeed + newSpeed;
+    }
     //управление
     #region Controll 
     public void MoovLeft()
