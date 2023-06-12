@@ -6,6 +6,8 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     public int indexDropItem;
+    [HideInInspector] public float x;
+    [HideInInspector] public float y;
     GeneralActive ga = new GeneralActive();
     AttributesItem aT = new AttributesItem();
     [HideInInspector]public int valueAttributes;
@@ -93,6 +95,8 @@ public class Item : MonoBehaviour
         {
             Event.SendDropItem(gameObject);
             Event.SendInstIndexDropItem();
+            x = transform.position.x;
+            y = transform.position.y;
         }
         if (customizable == true)
         {

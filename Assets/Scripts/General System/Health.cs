@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    public bool isPlayer;
     private float health;
     public Animator anim;
     #region StatPers
@@ -37,37 +38,7 @@ public class Health : MonoBehaviour
     private float valueElectric;
     private float saveArmor;
     #endregion
-   /* #region TemporaryVariables
-    private float temporaryDamage = 0;
 
-    private float temporaryArmorHelmet = 0;
-    private float temporaryArmorBib = 0;
-    private float temporaryArmorGloves = 0;
-    private float temporaryArmorBoots = 0;
-
-    private float temporaryHealthHelmet = 0;
-    private float temporaryHealthBib = 0;
-    private float temporaryHealthGloves = 0;
-    private float temporaryHealthBoots = 0;
-    private float temporaryHealthAmulet = 0;
-    private float temporaryHealthRing1 = 0;
-    private float temporaryHealthRing2 = 0;
-    private float temporaryHealthBracelete = 0;
-
-    private float temporaryResistanceAmulet = 0;
-    private float temporaryResistanceRing1 = 0;
-    private float temporaryResistanceRing2 = 0;
-    private float temporaryResistanceBracelete = 0;
-
-    private float temporarySpikeHelmet = 0;
-    private float temporarySpikeBib = 0;
-    private float temporarySpikeGloves = 0;
-    private float temporarySpikeBoots = 0;
-
-    private float temporarySpeedBoots = 0;
-
-    private float temporaryVampirism = 0;
-    #endregion*/
     private void Start()
     {
         health = maxHealth;
@@ -78,8 +49,6 @@ public class Health : MonoBehaviour
         Event.OnReResistiance.AddListener(ReResistiance);
         Event.OnReSpike.AddListener(ReSpike);
         Event.OnReVampirism.AddListener(ReVampirism);
-       /* Event.OnReRing2.AddListener(ReRing2);
-        Event.OnReBracelete.AddListener(ReBracelete);*/
     }
 
     private void Update()
@@ -229,117 +198,34 @@ public class Health : MonoBehaviour
 
     public void ReArmor(float oldArmor, float newArmor)
     {
+        if (isPlayer)
         armor = armor - oldArmor + newArmor;
     }
 
     public void ReHealth(float oldHealth, float newHealth)
     {
-        health = health - oldHealth + newHealth;
-        maxHealth = maxHealth - oldHealth + newHealth;
+        if (isPlayer)
+        {
+            health = health - oldHealth + newHealth;
+            maxHealth = maxHealth - oldHealth + newHealth;
+        }
     }
 
     public void ReResistiance(float oldResist, float newResist)
     {
-        resistance = resistance - oldResist + newResist;
+        if (isPlayer)
+            resistance = resistance - oldResist + newResist;
     }
 
     public void ReSpike(float oldSpike, float newSpike)
     {
-        spike = spike - oldSpike + newSpike;
+        if (isPlayer)
+            spike = spike - oldSpike + newSpike;
     }
 
     public void ReVampirism(float oldVampirism, float newVampirism)
     {
         vampirizme = vampirizme - oldVampirism + newVampirism;
     }
-    /*public void ReWeapon(float damage, float vampirism)
-    {
-        this.damage = this.damage + damage - temporaryDamage;
-        this.vampirizme = this.vampirizme + vampirism - temporaryVampirism;
-        temporaryDamage = damage;
-        temporaryVampirism = vampirism;
-    }
-
-    public void ReHelmet(float armor, float health, float spike)
-    {
-        this.armor = this.armor + armor - temporaryArmorHelmet;
-        this.baseHealth = this.baseHealth + health - temporaryHealthHelmet;
-        this.spike = this.spike + spike - temporarySpikeHelmet;
-        this.health = this.health + health - temporaryHealthHelmet;
-        temporaryArmorHelmet = armor;
-        temporaryHealthHelmet = health;
-        temporarySpikeHelmet = spike;
-    }
-
-    public void ReBib(float armor, float health, float spike)
-    {
-        this.armor = this.armor + armor - temporaryArmorBib;
-        this.baseHealth = this.baseHealth + health - temporaryHealthBib;
-        this.spike = this.spike + spike - temporarySpikeBib;
-        this.health = this.health + health - temporaryHealthBib;
-        temporaryArmorBib = armor;
-        temporaryHealthBib = health;
-        temporarySpikeBib = spike;
-    }
-
-    public void ReGloves(float armor, float health, float spike)
-    {
-        this.armor = this.armor + armor - temporaryArmorGloves;
-        this.baseHealth = this.baseHealth + health - temporaryHealthGloves;
-        this.spike = this.spike + spike - temporarySpikeGloves;
-        this.health = this.health + health - temporaryHealthGloves;
-        temporaryArmorGloves = armor;
-        temporaryHealthGloves = health;
-        temporarySpikeGloves = spike;
-    }
-
-    public void ReBoots(float armor, float health, float spike, float speed)
-    {
-        this.armor = this.armor + armor - temporaryArmorBoots;
-        this.baseHealth = this.baseHealth + health - temporaryHealthBoots;
-        this.spike = this.spike + spike - temporarySpikeBoots;
-        this.speed = this.speed + speed - temporarySpeedBoots;
-        this.health = this.health + health - temporaryHealthBoots;
-        temporaryArmorBoots = armor;
-        temporaryHealthBoots = health;
-        temporarySpikeBoots = spike;
-        temporarySpeedBoots = speed;
-    }
-
-    public void ReAmulet(float health, float resistance)
-    {
-        this.baseHealth = this.baseHealth + health - temporaryHealthAmulet;
-        this.resistance = this.resistance + resistance - temporaryResistanceAmulet;
-        this.health = this.health + health - temporaryHealthAmulet;
-        temporaryHealthAmulet = health;
-        temporaryResistanceAmulet = resistance;
-    }
-
-    public void ReRing1(float health, float resistance)
-    {
-        this.baseHealth = this.baseHealth + health - temporaryHealthRing1;
-        this.resistance = this.resistance + resistance - temporaryResistanceRing1;
-        this.health = this.health + health - temporaryHealthRing1;
-        temporaryHealthRing1 = health;
-        temporaryResistanceRing1 = resistance;
-    }
-
-    public void ReRing2(float health, float resistance)
-    {
-        this.baseHealth = this.baseHealth + health - temporaryHealthRing2;
-        this.resistance = this.resistance + resistance - temporaryResistanceRing2;
-        this.health = this.health + health - temporaryHealthRing2;
-        temporaryHealthRing2 = health;
-        temporaryResistanceRing2 = resistance;
-    }
-
-    public void ReBracelete(float health, float resistance)
-    {
-        this.baseHealth = this.baseHealth + health - temporaryHealthBracelete;
-        this.resistance = this.resistance + resistance - temporaryResistanceBracelete;
-        this.health = this.health + health - temporaryHealthBracelete;
-        temporaryHealthBracelete = health;
-        temporaryResistanceBracelete = resistance;
-    }*/
     #endregion
 }

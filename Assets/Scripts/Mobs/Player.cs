@@ -17,6 +17,9 @@ public class Player : MonoBehaviour
     private Animator anim;
     // переменные для передачи данных в другие скрипты
     public static GameObject player;
+    public float xp;
+    public static int lvl = 1;
+    public int limitationXpLvl;
 
     private void Awake()
     {
@@ -57,11 +60,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    /* public void ReSpeed(float reSpeed)
-     {
-         speed += baseSpeed + reSpeed;
-     }*/
-
     public void ReSpeed(float oldSpeed, float newSpeed)
     {
         speed = speed - oldSpeed + newSpeed;
@@ -99,4 +97,19 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+    public void xpPlus(float xpEnemy)
+    {
+        xp += xpEnemy;
+        lvlUp();
+    }
+
+    private void lvlUp()
+    {
+        if (xp >= limitationXpLvl)
+        {
+            lvl++;
+            limitationXpLvl *= 2;
+            Event.SendLvlUp();
+        }
+    }
 }

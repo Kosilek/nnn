@@ -16,6 +16,7 @@ public static class Event
     public static UnityEvent<GameObject> OnDropItem = new UnityEvent<GameObject>();
     public static UnityEvent<int> OnRemoveDropItem = new UnityEvent<int>();
     public static UnityEvent OnInstIndexDropItem = new UnityEvent();
+    public static UnityEvent OnLvlUp = new UnityEvent();
 
     public static void SendReDamage(float oldF, float newF)
     {
@@ -60,21 +61,11 @@ public static class Event
         OnInstIndexDropItem.Invoke();
     }
 
+    public static void SendLvlUp()
+    {
+        OnLvlUp.Invoke();
+    }
 
-
-    /* 
-     public static UnityEvent<float, float, float, float> OnReWeapon = new UnityEvent<float, float, float, float>();
-     // public static UnityEvent<float, float, float, float, float, float> OnReHelmet = new UnityEvent<float, float, float, float, float, float>();
-     public static UnityEvent<float, float, float, float, float> OnReHelmet = new UnityEvent<float, float, float, float, float>();
-     public static UnityEvent<float, float, float, float, float, float> OnReBib = new UnityEvent<float, float, float, float, float, float>();
-     public static UnityEvent<float, float, float, float, float, float> OnReGloves = new UnityEvent<float, float, float, float, float, float>();
-     public static UnityEvent<float, float, float, float, float> OnReBoots = new UnityEvent<float, float, float, float, float>();
-    public static UnityEven
-     public static UnityEvent<float, float, float, float> OnReAmulet = new UnityEvent<float, float, float, float>();
-     public static UnityEvent<float, float, float, float> OnReRing1 = new UnityEvent<float, float, float, float>();
-     public static UnityEvent<float, float, float, float> OnReRing2 = new UnityEvent<float, float, float, float>();
-     public static UnityEvent<float, float, float, float> OnReBracelete = new UnityEvent<float, float, float, float>();
-     */
     public static void SendScoreCoinsSouls(int score)
     {
         OnScoreCoinsSouls.Invoke(score);
@@ -89,50 +80,5 @@ public static class Event
     {
         OnAddUnStackableItem.Invoke(item);
     }
-
-   /* public static void SendReWeapon(float damage, float vampirism, float oldDamage, float oldVampirisme)
-    {
-        OnReWeapon.Invoke(damage, vampirism, oldDamage, oldVampirisme);
-    }
-
-    public static void SendReHelmet(float armor, float heatlh, float spike)
-    {
-        OnReHelmet.Invoke(armor, heatlh, spike);
-    }
-
-    public static void SendReBib(float armor, float heatlh, float spike)
-    {
-        OnReBib.Invoke(armor, heatlh, spike);
-    }
-
-    public static void SendReGloves(float armor, float heatlh, float spike)
-    {
-        OnReGloves.Invoke(armor, heatlh, spike);
-    }
-
-    public static void SendReBoots(float armor, float heatlh, float spike, float speed)
-    {
-        OnReBoots.Invoke(armor, heatlh, spike, speed);
-    }
-
-    public static void SendReAmulet(float heatlh, float resistiance)
-    {
-        OnReAmulet.Invoke(heatlh, resistiance);
-    }
-
-    public static void SendReRing1(float heatlh, float resistiance)
-    {
-        OnReRing1.Invoke(heatlh, resistiance);
-    }
-
-    public static void SendReRing2(float heatlh, float resistiance)
-    {
-        OnReRing2.Invoke(heatlh, resistiance);
-    }
-
-    public static void SendReBracelete(float heatlh, float resistiance)
-    {
-        OnReBracelete.Invoke(heatlh, resistiance);
-    }*/
 }
    

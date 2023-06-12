@@ -139,6 +139,7 @@ public class DamageObject : MonoBehaviour
     #endregion
     public void ReDamage(float oldDamage, float newDamage)
     {
-        damage = damage - oldDamage + newDamage;
+        if (isPlayer)
+            damage = damage - oldDamage + newDamage;
     }
 }
