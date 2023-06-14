@@ -21,12 +21,14 @@ public static class Event
     public static UnityEvent OnDexterity = new UnityEvent();
     public static UnityEvent OnIntelligance = new UnityEvent();
     public static UnityEvent<float> OnAddXp = new UnityEvent<float>();
+    public static UnityEvent<GameObject> OnEnemy = new UnityEvent<GameObject>();
+    public static UnityEvent<int> OnRemoveEnemy = new UnityEvent<int>();
+    public static UnityEvent OnInstIndexEnemy = new UnityEvent();
 
     public static void SendReDamage(float oldF, float newF)
     {
         OnReDamage.Invoke(oldF, newF);
     }
-
     public static void SendReArmor(float oldF, float newF)
     {
         OnReArmor.Invoke(oldF, newF);
@@ -59,50 +61,53 @@ public static class Event
     {
         OnRemoveDropItem.Invoke(index);
     }
-
     public static void SendInstIndexDropItem()
     {
         OnInstIndexDropItem.Invoke();
     }
-
     public static void SendLvlUp()
     {
         OnLvlUp.Invoke();
     }
-
     public static void SendScoreCoinsSouls(int score)
     {
         OnScoreCoinsSouls.Invoke(score);
     }
-
     public static void SendAddStackableItem(GameObject item, int id, int itemCount)
     {
         OnAddStackableItem.Invoke(item, id, itemCount);
     }
-
     public static void SendAddUnStackableItem(GameObject item)
     {
         OnAddUnStackableItem.Invoke(item);
     }
-
     public static void SendStrenght()
     {
         OnStrenght.Invoke();
     }
-
     public static void SendDexterity()
     {
         OnDexterity.Invoke();
     }
-
     public static void SendIntelligance()
     {
         OnIntelligance.Invoke();
     }
-
     public static void SendAddXp(float xp)
     {
         OnAddXp.Invoke(xp);
+    }
+    public static void SendEnemy(GameObject enemy)
+    {
+        OnEnemy.Invoke(enemy);
+    }
+    public static void SendRemoveEnemy(int index)
+    {
+        OnRemoveEnemy.Invoke(index);
+    }
+    public static void SendInstIndexEnemy()
+    {
+        OnInstIndexEnemy.Invoke();
     }
 }
    

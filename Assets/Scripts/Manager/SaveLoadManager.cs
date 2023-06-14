@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.IO;
 using Unity.VisualScripting;
+using System;
 
 public class SaveLoadManager : Singleton<SaveLoadManager>
 {
@@ -12,8 +13,9 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
    // public static List<Item> itemSave = new List<Item>();
     #endregion
     #region Manager
-    [SerializeField]private Inventory inventory;
+    [SerializeField] private Inventory inventory;
     [SerializeField] private DropItem dropItem;
+    [SerializeField] private LevelManager levelManager;
     #endregion
 
     private string filePath;
@@ -28,6 +30,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     {
         inventory = GetComponent<Inventory>();
         dropItem = GetComponent<DropItem>();
+        levelManager = GetComponent<LevelManager>();
     }
 
     public void SaveGame()
@@ -38,7 +41,8 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
 
         save.SaveItems(inventory.item, save.itemsData);
         save.SaveItems(dropItem.dropItem, save.dropItemData);
-        Debug.Log(save.dropItemData.Count);
+        save.SaveEnemy(levelManager.enemySave, save.enemyData);
+        Debug.Log($"enemySave = {levelManager.enemySave.Count}, enemySaveData = {save.enemyData.Count}");
         bf.Serialize(fs, save);
         fs.Close();
     }
@@ -56,11 +60,13 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         fs.Close();
 
         LoadItem(save, inventory);
-        if (dropItem.dropItem.Count != save.dropItemData.Count)
+       /* if (dropItem.dropItem.Count != save.dropItemData.Count)
             Debug.Log($"real = {dropItem.dropItem.Count}");
-        Debug.Log($"save = {save.dropItemData.Count}");
+        Debug.Log($"save = {save.dropItemData.Count}");*/
             save.SaveItems(dropItem.dropItem, save.dropItemData);//мб переделать под восоздание предмета
         LoadDropItem(save, dropItem);
+        save.SaveEnemy(levelManager.enemySave, save.enemyData);
+        LoadEnemy(save, levelManager);
     }
 
     private void LoadItem(Save save, Inventory inventory)
@@ -82,6 +88,16 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
             j++;
         }
     }
+
+    private void LoadEnemy(Save save, LevelManager levelManager)
+    {
+        int j = 0;
+        foreach (var enemy in save.enemyData)
+        {
+            levelManager.LoadData(enemy, j);
+            j++;
+        }
+    }
 }
 
 [System.Serializable] public class Save
@@ -98,7 +114,130 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
             this.z = z;
         }
     }
+    #region EnemyData
+    [System.Serializable] public struct enemySaveData
+    {
+        public bool randMonstr;
+        public int levelLocation;
+        public TypeEnemy typeEnemy;
+        public TypeEnemySpecial typeSpecial;
+        public int index;
+        public int lvlMonstr;
+        public float damage;
+        public float armor;
+        public float maxHeathl;
+        public float resistiance;
+        public float spike;
+        public float speed;
+        public float vampirism;
+        public bool physDamage;
+        public bool magicDamage;
+        public bool poison;
+        public bool fire;
+        public bool electric;
+        public float valuePoison;
+        public float timePoison;
+        public float fireDamage;
+        public float valueElectric;
+        public float timerElectric;
+        public bool immunPosion;
+        public bool immunFire;
+        public bool immunElectric;
+        public int countSouls;
+        public float xp;
+        public GameObject[] dropItemPre;
+        public GameObject dropItem;
+        public int coefA;
+        public Vec3 Position;
+        public enemySaveData(bool randMonstr, int levelLocation, TypeEnemy typeEnemy, TypeEnemySpecial typeSpecial,
+            int index, int lvlMonstr, float damage, float armor, float maxHeathl, float resistiance, float spike, 
+            float speed, float vampirism, bool physDamage, bool magicDamage, bool poison, bool fire, bool electric,
+            float valuePoison, float timePoison, float fireDamage, float valueElectric, float timerElectric,
+            bool immunPosion, bool immunFire, bool immunElectric, int countSouls, float xp, GameObject[] dropItemPre,
+            GameObject dropItem, int coefA, Vec3 pos)
+        {
+            this.randMonstr = randMonstr;
+            this.levelLocation = levelLocation;
+            this.typeEnemy = typeEnemy;
+            this.typeSpecial = typeSpecial;
+            this.index = index;
+            this.lvlMonstr = lvlMonstr;
+            this.damage = damage;
+            this.armor = armor;
+            this.maxHeathl = maxHeathl;
+            this.resistiance = resistiance;
+            this.spike = spike;
+            this.speed = speed;
+            this.vampirism = vampirism;
+            this.physDamage = physDamage;
+            this.magicDamage = magicDamage;
+            this.poison = poison;
+            this.fire = fire;
+            this.electric = electric;
+            this.valuePoison = valuePoison;
+            this.timePoison = timePoison;
+            this.fireDamage = fireDamage;
+            this.valueElectric = valueElectric;
+            this.timerElectric = timerElectric;
+            this.immunPosion = immunPosion;
+            this.immunFire = immunFire;
+            this.immunElectric = immunElectric;
+            this.countSouls = countSouls;
+            this.xp = xp;
+            this.dropItemPre = dropItemPre;
+            this.dropItem = dropItem;
+            this.coefA = coefA;
+            Position = pos;
+        }
+    }
 
+    public List<enemySaveData> enemyData = new List<enemySaveData>();
+
+    public void SaveEnemy(List<Enemy> enemy, List<enemySaveData> enemyData)
+    {
+        enemyData.Clear();
+        foreach(var go in enemy)
+        {
+            var it = go;
+            it.randMonstr = go.randMonstr;
+            it.levelLocation = go.levelLocation;
+            it.typeEnemy = go.typeEnemy;
+            it.typeSpecial = go.typeSpecial;
+            it.index = go.index;
+            it.lvlMonstr = go.lvlMonstr;
+            it.damage = go.damage;
+            it.armor = go.armor;
+            it.maxHeathl = go.maxHeathl;
+            it.resistiance = go.resistiance;
+            it.spike = go.spike;
+            it.speed = go.speed;
+            it.vampirism = go.vampirism;
+            it.physDamage = go.physDamage;
+            it.magicDamage = go.magicDamage;
+            it.poison = go.poison;
+            it.fire = go.fire;
+            it.electric = go.electric;
+            it.valuePoison = go.valuePoison;
+            it.timePoison = go.timePoison;
+            it.fireDamage = go.fireDamage;
+            it.valueElectric = go.valueElectric;
+            it.timerElectric = go.timerElectric;
+            it.immunPosion = go.immunPosion;
+            it.immunFire = go.immunFire;
+            it.immunElectric = go.immunElectric;
+            it.countSouls = go.countSouls;
+            it.xp = go.xp;
+            it.dropItemPre = go.dropItemPre;
+            it.dropItem = go.dropItem;
+            it.coefA = go.coefA;
+            Vec3 pos = new Vec3(go.transform.position.x, go.transform.position.y, go.transform.position.z);
+
+            enemyData.Add(new enemySaveData(it.randMonstr, it.levelLocation, it.typeEnemy, it.typeSpecial, it.index, it.lvlMonstr, it.damage, it.armor, it.maxHeathl, it.resistiance,
+                it.spike, it.speed, it.vampirism, it.physDamage, it.magicDamage, it.poison, it.fire, it.electric, it.valuePoison, it.timePoison, it.fireDamage, it.valueElectric, it.timerElectric,
+                it.immunPosion, it.immunFire, it.immunElectric, it.countSouls, it.xp, it.dropItemPre, it.dropItem, it.coefA, pos));
+        }
+    }
+    #endregion
     #region InventoryData
     [System.Serializable] public struct itemSaveData
     {

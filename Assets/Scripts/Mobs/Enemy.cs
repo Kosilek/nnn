@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     public int levelLocation;
     public TypeEnemy typeEnemy;
     public TypeEnemySpecial typeSpecial;
+    public int index;
     #region Stats
     [Header("mainStats")]
     public int lvlMonstr;
@@ -46,10 +47,10 @@ public class Enemy : MonoBehaviour
     #region dropDeathMonsrt
     public int countSouls;
     public float xp;
-    [SerializeField] private GameObject[] dropItemPre;
-    private GameObject dropItem;
+    public GameObject[] dropItemPre;
+    public GameObject dropItem;
     #endregion
-    private int coefA;
+    public int coefA;
 
     private void Awake()
     {
@@ -59,7 +60,6 @@ public class Enemy : MonoBehaviour
             lvlMonstr = RandLevelMonstr();
             countSouls = ValueCountSouls();
             xp = ValueXp();
-            TypeDropItem();
             (damage, armor, maxHeathl, resistiance) = InstallStat();
             InstallStatTypeEnemy();
         }
@@ -67,12 +67,19 @@ public class Enemy : MonoBehaviour
         {
 
         }
+        TypeDropItem();
         GetComponent<Health>().armor = armor;
         GetComponent<Health>().maxHealth = maxHeathl;
         GetComponent<Health>().resistance = resistiance;
         GetComponent<Health>().spike = spike;
         GetComponent<Health>().vampirizme = vampirism;
       //  GetComponent<DamageObject>.damage = damage; 
+    }
+
+    private void Start()
+    {
+        Event.SendEnemy(gameObject);
+        Event.SendInstIndexEnemy();
     }
     #region InstallRandStatEnemy
     private void InstallStatTypeEnemy()
@@ -95,27 +102,33 @@ public class Enemy : MonoBehaviour
             case TypeEnemySpecial.magic:
                 magicDamage = true;
                 physDamage = false;
-                armor -= 5;
-                resistiance += 10;
-                damage = 0;
+                armor -= 5f;
+                resistiance += 10f;
+                damage = 0f;
                 TypeMagicDamage();
                 break;
             case TypeEnemySpecial.knight:
                 speed -= 1.5f;
-                armor += 7 * lvlMonstr;
+                armor += 7f * lvlMonstr;
                 damage -= 3f * lvlMonstr;
-                maxHeathl += 60 * lvlMonstr;
-                resistiance += 2 * lvlMonstr;
-                spike += 5 + 3 * lvlMonstr;
+                maxHeathl += 60f * lvlMonstr;
+                resistiance += 2f * lvlMonstr;
+                spike += 5f + 3f * lvlMonstr;
                 immunElectric = true;
                 immunFire = true;
                 immunPosion = true;
                 break;
             case TypeEnemySpecial.vampir:
-                speed += 1;
-                armor -= 3 * lvlMonstr;
-                damage += 4 * lvlMonstr;
-                vampirism += 4 * lvlMonstr;
+                speed += 1f;
+                armor -= 3f * lvlMonstr;
+                damage += 4f * lvlMonstr;
+                vampirism += 4f * lvlMonstr;
+                break;
+            case TypeEnemySpecial.sniper:
+                speed = 0f;
+                damage += 15f * lvlMonstr;
+                armor = 0f;
+                resistiance = 0f;
                 break;
         }    
     }
@@ -233,8 +246,28 @@ public class Enemy : MonoBehaviour
 
     public void DropItem()
     {
-     //   int i = ga.Rand(dropItemPre.Length);
-       // dropItem = dropItemPre[i];
+        int min, max;
+        (min, max) = RandLvlItem();
+        dropItem.GetComponent<Item>().levelItem = ga.Rand(min, max);
+        dropItem.GetComponent<Item>().customizable = false;
+        dropItem.GetComponent<Item>().dropItemBool = true;
+        Instantiate(dropItem, transform.position, transform.rotation);
+    }
+
+    private (int, int) RandLvlItem()
+    {
+        int min = 0, max = 0;
+        if (lvlMonstr == 1)
+        {
+            min = 1; 
+            max = 2;
+        } 
+        else if (lvlMonstr > 1 )
+        {
+            min = lvlMonstr - 1;
+            max = lvlMonstr + 1;
+        }
+        return (min, max);
     }
 }
 
@@ -252,5 +285,13 @@ public enum TypeEnemySpecial
     fly,
     magic,
     knight,
-    vampir
+    vampir,
+    sniper
+}
+
+public enum TypeMoov
+{
+    patrul,
+    jump,
+    security
 }

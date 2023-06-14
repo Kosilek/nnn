@@ -104,7 +104,10 @@ public class Item : MonoBehaviour
         }
         else if (customizable == false)
         {
-            levelItem = ga.Rand();
+            if (dropItemBool == false)
+            {
+                levelItem = ga.Rand();
+            }           
             valueAttributes = levelItem + 1;
             SwitchAttributes(typeItem);
             lenghtAttributes = 0;

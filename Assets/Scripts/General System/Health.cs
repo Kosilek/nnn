@@ -189,6 +189,8 @@ public class Health : MonoBehaviour
     {
         if (gameObject.GetComponent<Enemy>() != null)
         {
+            Event.SendRemoveEnemy(gameObject.GetComponent<Enemy>().index);
+            Event.SendInstIndexEnemy();
             gameObject.GetComponent<Enemy>().AddSoulsCoins();
             gameObject.GetComponent<Enemy>().DropItem();
             Event.SendAddXp(gameObject.GetComponent<Enemy>().xp);
