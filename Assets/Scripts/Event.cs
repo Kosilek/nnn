@@ -17,6 +17,10 @@ public static class Event
     public static UnityEvent<int> OnRemoveDropItem = new UnityEvent<int>();
     public static UnityEvent OnInstIndexDropItem = new UnityEvent();
     public static UnityEvent OnLvlUp = new UnityEvent();
+    public static UnityEvent OnStrenght = new UnityEvent();
+    public static UnityEvent OnDexterity = new UnityEvent();
+    public static UnityEvent OnIntelligance = new UnityEvent();
+    public static UnityEvent<float> OnAddXp = new UnityEvent<float>();
 
     public static void SendReDamage(float oldF, float newF)
     {
@@ -79,6 +83,26 @@ public static class Event
     public static void SendAddUnStackableItem(GameObject item)
     {
         OnAddUnStackableItem.Invoke(item);
+    }
+
+    public static void SendStrenght()
+    {
+        OnStrenght.Invoke();
+    }
+
+    public static void SendDexterity()
+    {
+        OnDexterity.Invoke();
+    }
+
+    public static void SendIntelligance()
+    {
+        OnIntelligance.Invoke();
+    }
+
+    public static void SendAddXp(float xp)
+    {
+        OnAddXp.Invoke(xp);
     }
 }
    

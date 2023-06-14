@@ -3,10 +3,10 @@ using UnityEngine.UI;
 public class CanvasManager : Singleton<CanvasManager>
 {
     //переменные панели статистики
-    public static int strenght = 10;
-    public static int dexterity = 8;
-    public static int intelligance = 5;
-    public static int freeHar;
+    public static int strenght = 0;
+    public static int dexterity = 0;
+    public static int intelligance = 0;
+    public static int freeHar = 14;
     [SerializeField] private Text strenghtPoint;
     [SerializeField] private Text dexterityPoint;
     [SerializeField] private Text intelligencePoint;
@@ -98,6 +98,7 @@ public class CanvasManager : Singleton<CanvasManager>
             strenght++;
             FreeHarMinus();
             strenghtPoint.text = strenght.ToString();
+            Event.SendStrenght();
         }      
     }
 
@@ -108,6 +109,7 @@ public class CanvasManager : Singleton<CanvasManager>
             dexterity++;
             FreeHarMinus();
             dexterityPoint.text = dexterity.ToString();
+            Event.SendDexterity();
         }
     }
 
@@ -118,6 +120,7 @@ public class CanvasManager : Singleton<CanvasManager>
             intelligance++;
             FreeHarMinus();
             intelligencePoint.text = intelligance.ToString();
+            Event.SendIntelligance();
         }
     }
 

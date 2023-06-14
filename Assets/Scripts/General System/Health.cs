@@ -7,24 +7,27 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    Formulas form = new Formulas();
     public bool isPlayer;
     private float health;
     public Animator anim;
+    [Header("for not Player")]
+    [Space(15)]
     #region StatPers
-    [SerializeField] private float maxHealth;
-    [SerializeField] private float armor;
-    [SerializeField] private float resistance;
-    [SerializeField] private float spike;
-    [SerializeField] private float vampirizme;
+    public float maxHealth;
+    public float armor;
+    public float resistance;
+    public float spike;
+    public float vampirizme;
     #endregion
     [SerializeField] Image hpBar;
     private float fill = 1f;
     [Space(10)]
     [Header("Immunity")]
     #region Immunity
-    [SerializeField] private bool immunPosion;
-    [SerializeField] private bool immunFire;
-    [SerializeField] private bool immunElectric;
+    public bool immunPosion;
+    public bool immunFire;
+    public bool immunElectric;
     #endregion
     #region Poison
     private float timerStartPoison;
@@ -49,6 +52,9 @@ public class Health : MonoBehaviour
         Event.OnReResistiance.AddListener(ReResistiance);
         Event.OnReSpike.AddListener(ReSpike);
         Event.OnReVampirism.AddListener(ReVampirism);
+        Event.OnStrenght.AddListener(ReStrenght);
+        Event.OnDexterity.AddListener(Redexterity);
+        Event.OnIntelligance.AddListener(ReIntelligance);
     }
 
     private void Update()
@@ -169,6 +175,12 @@ public class Health : MonoBehaviour
 
     private void Damage(GameObject gameObject, Animator anim, float damage)
     {
+        damage = form.DamageForm(damage, armor);
+        Debug.Log(damage);
+        if (damage <= 0)
+        {
+            damage = 1f;
+        }
         health -= damage;
         HitOrDeath(gameObject, anim);
     }
@@ -179,6 +191,7 @@ public class Health : MonoBehaviour
         {
             gameObject.GetComponent<Enemy>().AddSoulsCoins();
             gameObject.GetComponent<Enemy>().DropItem();
+            Event.SendAddXp(gameObject.GetComponent<Enemy>().xp);
         }
         if (gameObject.GetComponent<DamageObject>())
         {
@@ -226,6 +239,29 @@ public class Health : MonoBehaviour
     public void ReVampirism(float oldVampirism, float newVampirism)
     {
         vampirizme = vampirizme - oldVampirism + newVampirism;
+    }
+    #endregion
+
+    #region EventStat
+    public void ReStrenght()
+    {
+        if (isPlayer)
+        {
+            health += form.Strenght(1);
+            maxHealth += form.Strenght(1);
+        }
+    }
+
+    public void Redexterity()
+    {
+        if (isPlayer) 
+        armor += form.Dedexterity(1);
+    }
+
+    public void ReIntelligance()
+    {
+        if (isPlayer)
+        resistance += form.Intelligance(1);
     }
     #endregion
 }

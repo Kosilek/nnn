@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         Event.OnReSpeed.AddListener(ReSpeed);
+        Event.OnAddXp.AddListener(xpPlus);
         //Event.OnReSpeed.AddListener(ReSpeed);
     }
 
