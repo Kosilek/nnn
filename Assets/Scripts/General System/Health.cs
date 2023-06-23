@@ -9,7 +9,7 @@ public class Health : MonoBehaviour
 {
     Formulas form = new Formulas();
     public bool isPlayer;
-    private float health;
+    public float health;
     public Animator anim;
     [Header("for not Player")]
     [Space(15)]
@@ -40,6 +40,7 @@ public class Health : MonoBehaviour
     private float timerStartElectric;
     private float valueElectric;
     private float saveArmor;
+    private float coefVamp = 0.15f;
     #endregion
 
     private void Start()
@@ -154,6 +155,20 @@ public class Health : MonoBehaviour
         Damage(gameObject, anim, damage);
     }
 
+    public void Vampirism(float damage)
+    {
+        float vampHealth;
+        vampHealth = damage * coefVamp;
+        if (health + vampHealth < maxHealth)
+        {
+            health += vampHealth;
+        }
+        else if (health + vampHealth > maxHealth)
+        {
+            health = maxHealth;
+        }
+    }
+
     public void HitOrDeath(GameObject gameObject, Animator anim)
     {
         if (health > 0)
@@ -176,7 +191,6 @@ public class Health : MonoBehaviour
     private void Damage(GameObject gameObject, Animator anim, float damage)
     {
         damage = form.DamageForm(damage, armor);
-        Debug.Log(damage);
         if (damage <= 0)
         {
             damage = 1f;
@@ -209,6 +223,7 @@ public class Health : MonoBehaviour
     {
      //   anim.SetBool(MeaningString.hit, false);
     }
+
     #region EventReIten
 
     public void ReArmor(float oldArmor, float newArmor)

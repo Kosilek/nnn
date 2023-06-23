@@ -113,4 +113,10 @@ public class Player : MonoBehaviour
             Event.SendLvlUp();
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Coins>() != null)
+            collision.GetComponent<Coins>().AddCoinsSouls();
+    }
 }

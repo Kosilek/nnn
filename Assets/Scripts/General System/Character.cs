@@ -41,6 +41,7 @@ public class Character : Singleton<Character>
     }
     public static void Shoot(GameObject bullet, Transform firePoint)
     {
+        Debug.Log("creat");
         Instantiate(bullet, firePoint.position, firePoint.rotation);
     }
 

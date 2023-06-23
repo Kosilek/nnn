@@ -67,7 +67,7 @@ public class LevelPanel : MonoBehaviour
         PlayerPrefsSafe.SetInt(MeaningString.level, x);
         levelPanel.SetActive(false);
         Instantiate(loadScene, gameObject.transform.position, gameObject.transform.rotation);
-        StartCoroutine(LoadScene.LoadAsync(MeaningString.sceneLevel));
+     //   StartCoroutine(LoadScene.LoadAsync(MeaningString.sceneLevel));
     }
 
     private void CreateButton(string nameButton, string textButton, Transform spawnBlock, int level, float anchorMinX, float anchorMinY, float anchorMaxX, float anchorMaxY, bool WinLastLevel)

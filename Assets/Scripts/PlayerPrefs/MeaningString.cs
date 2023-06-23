@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MeaningString
 {
+    public const string ground = "ground";
     // PlayerPrefs
     public const string music = "music";
     public const string sound = "sound";
@@ -16,6 +17,7 @@ public class MeaningString
     public const string state = "State";
     public const string isGrounder = "isGrounder";
     public const string vSpeed = "vSpeed";
+    public const string attack = "Attack";
     #region AttributesItem
     public const string weapon = "weapon";
     public const string helmet = "helmet";
@@ -33,5 +35,12 @@ public class MeaningString
     public const string spike = "Spike";
     public const string speed = "Speed";
     public const string vampirism = "Vampirism";
+    #endregion
+    #region SaveData
+    public const string enemy = "enemy";
+    public const string enemyKnight = "enemyKnight";
+    public const string enemyMagic = "enemyMagic";
+    public const string enemySniper = "enemySniper";
+    public const string enemyVampire = "enemyVampire";
     #endregion
 }

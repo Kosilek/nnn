@@ -5,6 +5,7 @@ using UnityEngine;
 public class LevelManager : Singleton<LevelManager>
 {
     public List<Enemy> enemySave = new List<Enemy>();
+    public List<EnemyResp> enemyResp = new List<EnemyResp>();
 
     protected override void Awake()
     {
@@ -12,6 +13,9 @@ public class LevelManager : Singleton<LevelManager>
         Event.OnEnemy.AddListener(AddEnemy);
         Event.OnRemoveEnemy.AddListener(RemoveEnemy);
         Event.OnInstIndexEnemy.AddListener(InstIndexEnemy);
+        Event.OnEnemyResp.AddListener(AddEnemyResp);
+        Event.OnInstIndexEnemyResp.AddListener(InstIndexEnemyResp);
+        Event.OnRemoveEnemyResp.AddListener(RemoveEnemyResp);
     }
 
     #region EnemyList
@@ -31,6 +35,26 @@ public class LevelManager : Singleton<LevelManager>
     public void RemoveEnemy(int index)
     {
         enemySave.RemoveAt(index);
+    }
+    #endregion
+
+    #region EnemyRespList
+    public void AddEnemyResp(GameObject enemyR)
+    {
+        enemyResp.Add(enemyR.GetComponent<EnemyResp>());
+    }
+
+    public void InstIndexEnemyResp()
+    {
+        for (int i = 0; i < enemyResp.Count; i++)
+        {
+            enemyResp[i].GetComponent<EnemyResp>().index = i;
+        }
+    }
+
+    public void RemoveEnemyResp(int index)
+    {
+        enemyResp.RemoveAt(index);
     }
     #endregion
 
@@ -64,9 +88,19 @@ public class LevelManager : Singleton<LevelManager>
         enemySave[index].immunElectric = save.immunElectric;
         enemySave[index].countSouls = save.countSouls;
         enemySave[index].xp = save.xp;
-        enemySave[index].dropItemPre = save.dropItemPre;
-        enemySave[index].dropItem = save.dropItem;
+       // enemySave[index].dropItemPre = save.dropItemPre;
+       // enemySave[index].dropItem = save.dropItem;
         enemySave[index].coefA = save.coefA;
         transform.position = new Vector3(save.Position.x, save.Position.y, save.Position.z);
+    }
+
+    public void LoadDataResp(Save.enemyRespData save, int index)
+    {
+        enemyResp[index].index = save.index;
+        enemyResp[index].maxTimer = save.maxTimer;
+        enemyResp[index].lvlLocation = save.lvlLocation;
+        enemyResp[index].randMonstr = save.randMonstr;
+        enemyResp[index].type = save.type;
+        enemyResp[index].typeSpecial = save.typeSpecial;
     }
 }

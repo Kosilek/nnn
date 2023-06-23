@@ -14,17 +14,22 @@ public class CanvasManager : Singleton<CanvasManager>
     [SerializeField] private Text freeHarTxt;
     //переменные текста на канвасе
     [SerializeField] private Text soulsCoins;
-    private int countSouls;
     //переменные таймеров
     [SerializeField] private float maxAttackDelay;
     private float timerAttackDelay;
+    public Money money;
 
     protected override void Awake()
     {
+        money = GetComponent<Money>();
         base.Awake();
-        soulsCoins.text = ("Souls: " + countSouls.ToString());
-        Event.OnScoreCoinsSouls.AddListener(AddCoinsSouls);
+        Event.OnDispSoulCoin.AddListener(DispCoin);
         Event.OnLvlUp.AddListener(lvlUp);
+    }
+
+    public void DispCoin()
+    {
+        soulsCoins.text = ("Souls: " + money.countSouls.ToString());
     }
 
     private void Start()
@@ -86,11 +91,7 @@ public class CanvasManager : Singleton<CanvasManager>
 
     #endregion
 
-    public void AddCoinsSouls(int count)
-    {
-        countSouls += count;
-        soulsCoins.text = ("Souls: " + countSouls.ToString());
-    }
+    
     public void strenghtPlus()
     {
         if(freeHar > 0)

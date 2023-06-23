@@ -24,7 +24,15 @@ public static class Event
     public static UnityEvent<GameObject> OnEnemy = new UnityEvent<GameObject>();
     public static UnityEvent<int> OnRemoveEnemy = new UnityEvent<int>();
     public static UnityEvent OnInstIndexEnemy = new UnityEvent();
+    public static UnityEvent<GameObject> OnEnemyResp = new UnityEvent<GameObject>();
+    public static UnityEvent<int> OnRemoveEnemyResp = new UnityEvent<int>();
+    public static UnityEvent OnInstIndexEnemyResp = new UnityEvent();
+    public static UnityEvent OnDispSoulCoin = new UnityEvent();
 
+    public static void SendDispSoulCoin()
+    {
+        OnDispSoulCoin.Invoke();
+    }
     public static void SendReDamage(float oldF, float newF)
     {
         OnReDamage.Invoke(oldF, newF);
@@ -108,6 +116,18 @@ public static class Event
     public static void SendInstIndexEnemy()
     {
         OnInstIndexEnemy.Invoke();
+    }
+    public static void SendEnemyResp(GameObject enemy)
+    {
+        OnEnemyResp.Invoke(enemy);
+    }
+    public static void SendRemoveEnemyResp(int index)
+    {
+        OnRemoveEnemyResp.Invoke(index);
+    }
+    public static void SendInstIndexEnemyResp()
+    {
+        OnInstIndexEnemyResp.Invoke();
     }
 }
    

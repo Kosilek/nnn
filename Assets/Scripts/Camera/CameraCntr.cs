@@ -16,7 +16,7 @@ public class CameraCntr : MonoBehaviour
 
     public void FindPlayer(bool playerIsLeft)
     {
-        Debug.Log($"player = = {player.position}");
+     //   Debug.Log($"player = = {player.position}");
         lastX = Mathf.RoundToInt(player.position.x);
         if (playerIsLeft)
         {
