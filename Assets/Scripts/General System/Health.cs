@@ -229,33 +229,33 @@ public class Health : MonoBehaviour
     public void ReArmor(float oldArmor, float newArmor)
     {
         if (isPlayer)
-        armor = armor - oldArmor + newArmor;
+        armor = armor + oldArmor - newArmor;
     }
 
     public void ReHealth(float oldHealth, float newHealth)
     {
         if (isPlayer)
         {
-            health = health - oldHealth + newHealth;
-            maxHealth = maxHealth - oldHealth + newHealth;
+            health = health + oldHealth - newHealth;
+            maxHealth = maxHealth + oldHealth - newHealth;
         }
     }
 
     public void ReResistiance(float oldResist, float newResist)
     {
         if (isPlayer)
-            resistance = resistance - oldResist + newResist;
+            resistance = resistance + oldResist - newResist;
     }
 
     public void ReSpike(float oldSpike, float newSpike)
     {
         if (isPlayer)
-            spike = spike - oldSpike + newSpike;
+            spike = spike + oldSpike - newSpike;
     }
 
     public void ReVampirism(float oldVampirism, float newVampirism)
     {
-        vampirizme = vampirizme - oldVampirism + newVampirism;
+        vampirizme = vampirizme + oldVampirism - newVampirism;
     }
     #endregion
 

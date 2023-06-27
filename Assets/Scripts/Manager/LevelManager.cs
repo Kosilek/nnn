@@ -34,7 +34,15 @@ public class LevelManager : Singleton<LevelManager>
 
     public void RemoveEnemy(int index)
     {
-        enemySave.RemoveAt(index);
+        if (index != 0)
+        {
+            enemySave.RemoveAt(index);
+        }
+        else if (index == 0)
+        {
+            enemySave.Clear();
+        }
+        
     }
     #endregion
 

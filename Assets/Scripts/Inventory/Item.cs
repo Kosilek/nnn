@@ -110,15 +110,38 @@ public class Item : MonoBehaviour
             }           
             valueAttributes = levelItem + 1;
             SwitchAttributes(typeItem);
-            lenghtAttributes = 0;
-            while (lenghtAttributes != valueAttributes)
+           // lenghtAttributes = 0;
+            /* while (lenghtAttributes != valueAttributes)
+             {
+                 InstallAttribyte(typeItem);
+             }*/
+
+            for (int i = 0; i < valueAttributes; i++)
             {
                 InstallAttribyte(typeItem);
             }
-            lenghtAttributes = 0;
+
+           // lenghtAttributes = 0;
             InstallAtrributesStatics(typeItem);
         }
     }
+
+    public void RandItem(TypeItem typeItem)
+    {
+        damageInt = 0;
+        damage = 0;
+        vampirismInt = 0;
+        vampirism = 0;
+        levelItem = ga.Rand();
+        valueAttributes = levelItem + 1;
+        SwitchAttributes(typeItem);
+        for (int i = 0; i < valueAttributes; i++)
+        {
+            InstallAttribyte(typeItem);
+        }
+        InstallAtrributesStatics(typeItem);
+    }
+
     #region instAttributesItem
     private void InstallAttribyte(TypeItem type)
     {
@@ -165,7 +188,7 @@ public class Item : MonoBehaviour
                 vampirismInt++;
                 break;
         }
-        lenghtAttributes++;
+      //  lenghtAttributes++;
     }
 
     private void InstallAttribyteHelmet()
@@ -184,7 +207,7 @@ public class Item : MonoBehaviour
                 spikeInt++;
                 break;
         }
-        lenghtAttributes++;
+       // lenghtAttributes++;
     }
 
     private void InstallAttribyteBib()
@@ -203,7 +226,7 @@ public class Item : MonoBehaviour
                 spikeInt++;
                 break;
         }
-        lenghtAttributes++;
+      //  lenghtAttributes++;
     }
 
     private void InstallAttribyteGloves()
@@ -222,7 +245,7 @@ public class Item : MonoBehaviour
                 spikeInt++;
                 break;
         }
-        lenghtAttributes++;
+      //  lenghtAttributes++;
     }
 
     private void InstallAttribyteBoots()
@@ -244,7 +267,7 @@ public class Item : MonoBehaviour
                 speedInt++;
                 break;
         }
-        lenghtAttributes++;
+       // lenghtAttributes++;
     }
 
     private void InstallAttribyteAmulet()
@@ -260,7 +283,7 @@ public class Item : MonoBehaviour
                 healthInt++;
                 break;
         }
-        lenghtAttributes++;
+       // lenghtAttributes++;
     }
 
     private void InstallAttribyteRing()
@@ -276,7 +299,7 @@ public class Item : MonoBehaviour
                 healthInt++;
                 break;
         }
-        lenghtAttributes++;
+      //  lenghtAttributes++;
     }
 
     private void InstallAttribyteBracelete()
@@ -292,7 +315,7 @@ public class Item : MonoBehaviour
                 healthInt++;
                 break;
         }
-        lenghtAttributes++;
+      //  lenghtAttributes++;
     }
 
     private void SwitchAttributes(TypeItem type)

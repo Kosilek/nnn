@@ -164,18 +164,20 @@ public class Enemy : MonoBehaviour
     {
         if (attack)
         {
-            anim.SetBool(MeaningString.attack, true);
+            // anim.SetBool(MeaningString.attack, true);
+            anim.SetTrigger(MeaningString.attack);
             attackTimer = attackTimerMax;
             attack = false;
-            Invoke("StopAttack", 0.1f);
+            //Invoke("StopAttack", 0.1f);
+            Debug.Log("qqq");
         }
     }
 
-    private void StopAttack()
+   /* private void StopAttack()
     {
         Debug.Log("StopAttack");
         anim.SetBool(MeaningString.attack, false);
-    }
+    }*/
 
     private void TimerAttack()
     {

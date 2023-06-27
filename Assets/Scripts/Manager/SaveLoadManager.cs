@@ -122,6 +122,102 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
             this.z = z;
         }
     }
+    
+    public struct DamageObject
+    {
+        public float damage;
+        public bool physDamage;
+        public bool magicDamage;
+        public bool poison;
+        public bool fire;
+        public bool electric;
+        public float valuePoison;
+        public float timePoison;
+        public float fireDamage;
+        public float valueElectric;
+        public float timerElectric;
+        public DamageObject(float damage, bool physDamage, bool magicDamage, bool poison, bool fire, bool electric, float valuePoison, float timePoison, float fireDamage, float valueElectric, float timerElectric)
+        {
+            this .damage = damage;
+            this .physDamage = physDamage;
+            this .magicDamage = magicDamage;
+            this .poison = poison;
+            this .fire = fire;
+            this .electric = electric;
+            this .valuePoison = valuePoison;
+            this.timePoison = timePoison;
+            this .fireDamage = fireDamage;
+            this .valueElectric = valueElectric;
+            this .timerElectric = timerElectric;
+
+        }
+    }
+
+    public struct Health
+    {
+        public float health;
+        public float maxHealth;
+        public float armor;
+        public float resistance;
+        public float spike;
+        public float vampirizme;
+        public bool immunPosion;
+        public bool immunFire;
+        public bool immunElectric;
+        public Health(float health, float maxHealth, float armor, float resistance, float spike, float vampirizme,
+            bool immunPosion, bool immunFire, bool immunElectric)
+        {
+            this.health = health;
+            this.maxHealth = maxHealth;
+            this.armor = armor;
+            this.resistance = resistance;
+            this.spike = spike;
+            this.vampirizme = vampirizme;
+            this.immunPosion = immunPosion;
+            this.immunFire = immunFire;
+            this.immunElectric = immunElectric;
+
+        }
+    }
+
+    public struct EnemyData
+    {
+        public float speed;
+        public bool randMonstr;
+        public int levelLocation;
+        public TypeEnemy typeEnemy;
+        public int index;
+        public int lvlMonstr;
+        public int countSouls;
+        public float xp;
+        public int coefA;
+        public EnemyData(float speed, bool randMonstr, int levelLocation, TypeEnemy typeEnemy, int index, int lvlMonstr, int countSouls, float xp, int coefA)
+        {
+            this.speed = speed;
+            this.randMonstr = randMonstr;
+            this.levelLocation = levelLocation;
+            this.typeEnemy = typeEnemy;
+            this.index = index;
+            this.lvlMonstr = lvlMonstr;
+            this.countSouls = countSouls;
+            this.xp = xp;
+            this.coefA = coefA;
+        }
+    }
+
+    public struct PlayerData
+    {
+        public float speed;
+        public float xp;
+        public int limitationXpLvl;
+        public PlayerData(float speed, float xp, int limitationXpLvl)
+        {
+            this.speed = speed;
+            this.xp = xp;
+            this.limitationXpLvl = limitationXpLvl;
+        }
+    }
+
     #region EnemyData
     [System.Serializable] public struct enemySaveData
     {

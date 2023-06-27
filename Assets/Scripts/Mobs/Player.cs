@@ -6,7 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     //переменные связанные с упр персонажа
-    [SerializeField]private float speed;
+    public float speed;
     [SerializeField] private float vSpeed;
     private float direction;
     // булевы переменные для проверок

@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexDropItem: 0
+  x: 0
+  y: 0
   valueAttributes: 0
   levelItem: 0
   nameItem: sword1
@@ -118,7 +120,7 @@ MonoBehaviour:
   spike: 0
   speed: 0
   vampirism: 0
-  typeRest: 0
+  typeRest: 4
   treatment: 0
   damageBool: 0
   armorBool: 0

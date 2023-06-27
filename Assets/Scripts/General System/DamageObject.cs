@@ -157,6 +157,6 @@ public class DamageObject : MonoBehaviour
     public void ReDamage(float oldDamage, float newDamage)
     {
         if (isPlayer)
-            damage = damage - oldDamage + newDamage;
+            damage = damage + oldDamage - newDamage;
     }
 }
