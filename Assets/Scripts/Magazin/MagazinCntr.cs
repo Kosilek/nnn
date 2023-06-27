@@ -57,7 +57,7 @@ public class MagazinCntr : MonoBehaviour
             indexItemMagazin.Add(i);
         }
 
-        for (int i = 0; i < cellMagazin.Count;i++)
+      /*  for (int i = 0; i < cellMagazin.Count;i++)
         {
             itemMagazinSell.Add(new Item());
         }
@@ -65,7 +65,7 @@ public class MagazinCntr : MonoBehaviour
         for (int i = 0; i < cellMagazin.Count; i++)
         {
             itemMagazinSellStat.Add(new Item());
-        }
+        }*/
 
         for (int i = 0;i < cellMagazin.Count;i++)
         {
@@ -73,10 +73,13 @@ public class MagazinCntr : MonoBehaviour
             int j = ga.Rand(0, itemMagazin.Count);
            // Debug.Log($"j = {j}");
             cellMagazin[i].GetComponent<Image>().sprite = itemMagazinIcon[j].GetComponent<Image>().sprite;
-            itemMagazinSell[i] = itemMagazin[j].GetComponent<Item>();
+            itemMagazinSell.Add(itemMagazin[j].GetComponent<Item>());
+           // itemMagazinSell[i] = itemMagazin[j].GetComponent<Item>();
             //itemMagazinSell[i].RandItem();
             q.RandItem(itemMagazinSell[i].typeItem);
-            itemMagazinSellStat[i] = q;
+            itemMagazinSellStat.Add(q);
+            //itemMagazinSellStat[i] = q;
+          //  itemMagazinSell[i].damage = 1f;
         }
     }
 
