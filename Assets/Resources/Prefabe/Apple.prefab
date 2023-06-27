@@ -98,13 +98,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 488e4827392401d4f83927d54c8337da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  typeItem: 8
+  indexDropItem: 0
+  x: 0
+  y: 0
+  valueAttributes: 0
+  levelItem: 0
   nameItem: Apple
   id: 2
-  countItem: 0
+  countItem: 1
   isStackable: 1
   pathIcon: Icons/Apple
   pathPrefab: Prefabe/Apple
+  customizable: 0
+  dropItemBool: 0
+  description: 
+  typeItem: 8
+  damage: 0
+  armor: 0
+  health: 0
+  resistance: 0
+  spike: 0
+  speed: 0
+  vampirism: 0
+  typeRest: 0
+  treatment: 0
+  damageBool: 0
+  armorBool: 0
+  healthBool: 0
+  resistanceBool: 0
+  spikeBool: 0
+  speedBool: 0
+  vampirismBool: 0
+  damageInt: 0
+  armorInt: 0
+  healthInt: 0
+  resistanceInt: 0
+  spikeInt: 0
+  speedInt: 0
+  vampirismInt: 0
 --- !u!58 &900401955
 CircleCollider2D:
   m_ObjectHideFlags: 0

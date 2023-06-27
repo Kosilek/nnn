@@ -2498,7 +2498,7 @@ MonoBehaviour:
   countSouls: 0
   xp: 0
   dropItemPre:
-  - {fileID: 368151784064751262, guid: bbfb56b35c685ae4c9e229eedbddb22a, type: 3}
+  - {fileID: 368151784064751262, guid: c9df7033362d8fe4da779c6d8286de09, type: 3}
   dropItem: {fileID: 0}
   sword: {fileID: 111065117439143776}
   coefA: 0

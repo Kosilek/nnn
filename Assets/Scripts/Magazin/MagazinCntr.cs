@@ -49,7 +49,7 @@ public class MagazinCntr : MonoBehaviour
     [SerializeField] private Text descriptionItemDec;
     #endregion
     private int index;
-
+    Inventory inventory = new Inventory();
     private void Start()
     {
         for (int i = 0; i < itemMagazin.Count; i++)
@@ -166,6 +166,7 @@ public class MagazinCntr : MonoBehaviour
 
     public void BuyItem()
     {
+        Debug.Log($"buyItem index = {index}");
         if (index >= 0)
         {
             cellMagazin[index].GetComponent<Image>().sprite = null;

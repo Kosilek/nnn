@@ -149,15 +149,21 @@ public class Inventory : Singleton<Inventory>
     }
     #endregion
 
+    #region BuyItem
+    #endregion
+
     public static void PickupTrigger(GameObject items, bool isStackable, int id, int itemCount)
     {
+        Debug.Log("pickupTrigger");
         if (isStackable)
         {
+            Debug.Log("pickupTrigger true");
             Event.SendAddStackableItem(items, id, itemCount);
         }
         else if (!isStackable)
         {
-           Event.SendAddUnStackableItem(items);
+            Debug.Log("pickupTrigger false");
+            Event.SendAddUnStackableItem(items);
         }
     }
 
@@ -168,7 +174,8 @@ public class Inventory : Singleton<Inventory>
             if (item[i].id == id)
             {
                 item[i].countItem += itemCount;
-                Destroy(items);
+                if (item[i].dropItemBool)
+                    Destroy(items);
                 return;
             }
         }
@@ -181,7 +188,10 @@ public class Inventory : Singleton<Inventory>
         {
             if (item[i].id == 0)
             {
+                Debug.Log("AddUnStackableItem");
                 item[i] = items.GetComponent<Item>();
+                Debug.Log(item[i].id);
+                if (item[i].dropItemBool)
                 Destroy(items);
                 break;
             }
