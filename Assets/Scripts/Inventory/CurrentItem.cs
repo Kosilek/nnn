@@ -16,19 +16,41 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     [SerializeField] private GameObject inventoryManager;
     private Inventory inventory;
     private bool checkTransfer;
+    public static bool sellItem = false;
 
     private bool checkId0;
 
     private void Start()
     {
         inventory = inventoryManager.GetComponent<Inventory>();
-        delete.SetActive(false);
-        inventory.panelStatistics.SetActive(false);
-        inventory.DeleteArray();
+        UnActive();
         Physics2D.queriesStartInColliders = false;
     }
 
+    private void UnActive()
+    {
+        delete.SetActive(false);
+        inventory.panelStatistics.SetActive(false);
+        inventory.DeleteArray();
+    }
+
     public void DeleteItem()
+    {
+        if (!sellItem)
+        {
+            DeleteItemInventory();
+        }
+
+        if (sellItem)
+        {
+            int cost = 0;
+            cost = inventory.CostSellItem(index);
+            Event.SendScoreCoinsSouls(cost);
+            DeleteItemInventory();
+        }
+    }
+
+    private void DeleteItemInventory()
     {
         inventory.DeleteItem(index, icon, txt, answer);
         delete.SetActive(false);
@@ -47,31 +69,40 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     {
         if (inventory.item[index].id != 0)
         {
-            if (delete.activeInHierarchy == true)
-            {
-                delete.SetActive(false);
-                
-                inventory.DeleteArray();
-            }
-            else if (delete.activeInHierarchy == false)
-            {
-                delete.SetActive(true);
-                
-                inventory.panelStatiscticsActive(index);
-            }
+            ActiveDelete();
+            ActivePanelStatistics();
         }
-        if (inventory.item[index].id != 0)
+      
+    }
+
+    private void ActiveDelete()
+    {
+        if (delete.activeInHierarchy == true)
         {
-            if (inventory.panelStatistics.activeInHierarchy == true)
-            {
-                inventory.panelStatistics.SetActive(false);
-            }
-            else if (inventory.panelStatistics.activeInHierarchy == false)
-            {
-                inventory.panelStatistics.SetActive(true);
-            }
+            delete.SetActive(false);
+
+            inventory.DeleteArray();
+        }
+        else if (delete.activeInHierarchy == false)
+        {
+            delete.SetActive(true);
+
+            inventory.panelStatiscticsActive(index);
         }
     }
+
+    private void ActivePanelStatistics()
+    {
+        if (inventory.panelStatistics.activeInHierarchy == true)
+        {
+            inventory.panelStatistics.SetActive(false);
+        }
+        else if (inventory.panelStatistics.activeInHierarchy == false)
+        {
+            inventory.panelStatistics.SetActive(true);
+        }
+    }
+
     #region TransferItem
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -159,118 +190,92 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
     private void CheckItemPlayer(int oldIndex, int newIndex)
     {
-        Debug.Log("CheckItemPlayer");
         switch (newIndex)
         {
             case 36:
-                //Event.SendReWeapon(inventory.item[oldIndex].damage, inventory.item[oldIndex].vampirism);
                 CheckItemType(oldIndex, newIndex, TypeItem.weapon);
                 if (checkTransfer)
                 {
-                    Event.SendReDamage(inventory.item[newIndex].damage, inventory.item[oldIndex].damage);
-                    Event.SendReVampirism(inventory.item[newIndex].vampirism, inventory.item[oldIndex].vampirism);
-                    checkTransfer = false;
+                    WeaponItem(newIndex, oldIndex);
+                     checkTransfer = false;
                 }
                 break;
             case 37:
-                // Event.SendReHelmet(inventory.item[oldIndex].armor, inventory.item[oldIndex].heatlh, inventory.item[oldIndex].spike);
                 CheckItemType(oldIndex, newIndex, TypeItem.helmet);
                 if (checkTransfer)
                 {
-                    Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
+                    ArmorItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
             case 38:
-                // Event.SendReBib(inventory.item[oldIndex].armor, inventory.item[oldIndex].heatlh, inventory.item[oldIndex].spike);
                 CheckItemType(oldIndex, newIndex, TypeItem.bib);
                 if (checkTransfer)
                 {
-                    Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
+                    ArmorItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
             case 39:
-                // Event.SendReGloves(inventory.item[oldIndex].armor, inventory.item[oldIndex].heatlh, inventory.item[oldIndex].spike);
                 CheckItemType(oldIndex, newIndex, TypeItem.gloves);
                 if (checkTransfer)
                 {
-                    Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
+                    ArmorItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
             case 40:
-                // Event.SendReBoots(inventory.item[oldIndex].armor, inventory.item[oldIndex].heatlh, inventory.item[oldIndex].spike, inventory.item[oldIndex].speed);
                 CheckItemType(oldIndex, newIndex, TypeItem.boots);
                 if (checkTransfer)
                 {
-                    Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
-                    Event.SendReSpeed(inventory.item[newIndex].speed, inventory.item[oldIndex].speed);
+                    BootsItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
             case 41:
-                //   Event.SendReAmulet(inventory.item[oldIndex].heatlh, inventory.item[oldIndex].resistance);
                 CheckItemType(oldIndex, newIndex, TypeItem.amulet);
                 if (checkTransfer)
                 {
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+                    DicorationItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
             case 42:
-                //   Event.SendReRing1(inventory.item[oldIndex].heatlh, inventory.item[oldIndex].resistance);
                 CheckItemType(oldIndex, newIndex, TypeItem.ring);
                 if (checkTransfer)
                 {
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+                    DicorationItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
             case 43:
-                //   Event.SendReRing2(inventory.item[oldIndex].heatlh, inventory.item[oldIndex].resistance);
                 CheckItemType(oldIndex, newIndex, TypeItem.ring);
                 if (checkTransfer)
                 {
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+                    DicorationItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
             case 44:
-                //  Event.SendReBracelete(inventory.item[oldIndex].heatlh, inventory.item[oldIndex].resistance);
                 CheckItemType(oldIndex, newIndex, TypeItem.bracelete);
                 if (checkTransfer)
                 {
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+                    DicorationItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
         }
     }
-
+  
     private void CheckItemType(int oldIndex, int newIndex, TypeItem type)
     {
         if (inventory.item[oldIndex].typeItem == type)
         {
-            Debug.Log("CheckItemType if");
             checkTransfer = true;
             CheckTheSameId(oldIndex, newIndex);
         }
         else
         {
-            Debug.Log("CheckItemType else");
             ReturnItem(oldIndex);
         }
     }
@@ -279,11 +284,10 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     {
         if (inventory.item[oldIndex].id == inventory.item[newIndex].id && inventory.item[oldIndex].isStackable == true)
         {
-            Debug.Log("ReItemIndex if");
             inventory.item[newIndex].countItem += inventory.item[oldIndex].countItem;
             inventory.DeleteItem(oldIndex, inventory.itemPubl[oldIndex].GetComponent<CurrentItem>().icon,
-                inventory.itemPubl[oldIndex].GetComponent<CurrentItem>().txt,
-                inventory.itemPubl[oldIndex].GetComponent<CurrentItem>().answer);
+            inventory.itemPubl[oldIndex].GetComponent<CurrentItem>().txt,
+            inventory.itemPubl[oldIndex].GetComponent<CurrentItem>().answer);
         }
         else 
         {
@@ -316,8 +320,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
                     Debug.Log("\"ReItemIndex if else switch false");
                     CheckTheSameId(oldIndex, newIndex);
                     break;
-            }
-            
+            }       
         }
     }
 
@@ -329,8 +332,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
            
                 if (checkTransfer)
                 {
-                    Event.SendReDamage(inventory.item[newIndex].damage, inventory.item[oldIndex].damage);
-                    Event.SendReVampirism(inventory.item[newIndex].vampirism, inventory.item[oldIndex].vampirism);
+                    WeaponItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
@@ -338,9 +340,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
           
                 if (checkTransfer)
                 {
-                    Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
+                    ArmorItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
@@ -348,9 +348,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
             
                 if (checkTransfer)
                 {
-                    Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
+                    ArmorItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
@@ -358,9 +356,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
          
                 if (checkTransfer)
                 {
-                    Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
+                    ArmorItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
@@ -368,10 +364,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
          
                 if (checkTransfer)
                 {
-                    Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
-                    Event.SendReSpeed(inventory.item[newIndex].speed, inventory.item[oldIndex].speed);
+                    BootsItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
@@ -379,8 +372,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
           
                 if (checkTransfer)
                 {
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+                    DicorationItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
@@ -388,8 +380,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
 
                 if (checkTransfer)
                 {
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+                    DicorationItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
@@ -397,8 +388,7 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
         
                 if (checkTransfer)
                 {
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+                    DicorationItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
@@ -406,80 +396,47 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
       
                 if (checkTransfer)
                 {
-                    Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
-                    Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+                    DicorationItem(newIndex, oldIndex);
                     checkTransfer = false;
                 }
                 break;
-                /*case 36:
-                   // Event.SendReWeapon(inventory.item[newIndex].damage, inventory.item[newIndex].vampirism);
-                    Event.SendReDamage(inventory.item[oldIndex].damage, inventory.item[newIndex].damage);
-                    Event.SendReVampirism(inventory.item[oldIndex].vampirism, inventory.item[newIndex].vampirism);
-                    break;
-                case 37:
-                    //  Event.SendReHelmet(inventory.item[newIndex].armor, inventory.item[newIndex].heatlh, inventory.item[newIndex].spike);
-                    Event.SendReArmor(inventory.item[oldIndex].armor, inventory.item[newIndex].armor);
-                    Event.SendReHealth(inventory.item[oldIndex].health, inventory.item[newIndex].health);
-                    Event.SendReSpike(inventory.item[oldIndex].spike, inventory.item[newIndex].spike);
-                    break;
-                case 38:
-                    //  Event.SendReBib(inventory.item[newIndex].armor, inventory.item[newIndex].heatlh, inventory.item[newIndex].spike);
-                    Event.SendReArmor(inventory.item[oldIndex].armor, inventory.item[newIndex].armor);
-                    Event.SendReHealth(inventory.item[oldIndex].health, inventory.item[newIndex].health);
-                    Event.SendReSpike(inventory.item[oldIndex].spike, inventory.item[newIndex].spike);
-                    break;
-                case 39:
-                   // Event.SendReGloves(inventory.item[newIndex].armor, inventory.item[newIndex].heatlh, inventory.item[newIndex].spike);
-                   Event.SendReArmor(inventory.item[oldIndex].armor, inventory.item[newIndex].armor);
-                    Event.SendReHealth(inventory.item[oldIndex].health, inventory.item[newIndex].health);
-                    Event.SendReSpike(inventory.item[oldIndex].spike, inventory.item[newIndex].spike);
-                    break;
-                case 40:
-                    // Event.SendReBoots(inventory.item[newIndex].armor, inventory.item[newIndex].heatlh, inventory.item[newIndex].spike, inventory.item[newIndex].speed);
-                    Event.SendReArmor(inventory.item[oldIndex].armor, inventory.item[newIndex].armor);
-                    Event.SendReHealth(inventory.item[oldIndex].health, inventory.item[newIndex].health);
-                    Event.SendReSpike(inventory.item[oldIndex].spike, inventory.item[newIndex].spike);
-                    Event.SendReSpeed(inventory.item[oldIndex].speed, inventory.item[newIndex].speed);
-                    break;
-                case 41:
-                    //  Event.SendReAmulet(inventory.item[newIndex].heatlh, inventory.item[newIndex].resistance);
-                    Event.SendReHealth(inventory.item[oldIndex].health, inventory.item[newIndex].health);
-                    Event.SendReResistiance(inventory.item[oldIndex].resistance, inventory.item[newIndex].resistance);
-                    break;
-                case 42:
-                    //   Event.SendReRing1(inventory.item[newIndex].heatlh, inventory.item[newIndex].resistance);
-                    Event.SendReHealth(inventory.item[oldIndex].health, inventory.item[newIndex].health);
-                    Event.SendReResistiance(inventory.item[oldIndex].resistance, inventory.item[newIndex].resistance);
-                    break;
-                case 43:
-                    //  Event.SendReRing2(inventory.item[newIndex].heatlh, inventory.item[newIndex].resistance);
-                    Event.SendReHealth(inventory.item[oldIndex].health, inventory.item[newIndex].health);
-                    Event.SendReResistiance(inventory.item[oldIndex].resistance, inventory.item[newIndex].resistance);
-                    break;
-                case 44:
-                    // Event.SendReBracelete(inventory.item[newIndex].heatlh, inventory.item[newIndex].resistance);
-                    Event.SendReHealth(inventory.item[oldIndex].health, inventory.item[newIndex].health);
-                    Event.SendReResistiance(inventory.item[oldIndex].resistance, inventory.item[newIndex].resistance);
-                    break;*/
         }
     }
 
+    #region EventItem
+    private void WeaponItem(int newIndex, int oldIndex)
+    {
+        Event.SendReDamage(inventory.item[newIndex].damage, inventory.item[oldIndex].damage);
+        Event.SendReVampirism(inventory.item[newIndex].vampirism, inventory.item[oldIndex].vampirism);
+    }
+
+    private void ArmorItem(int newIndex, int oldIndex)
+    {
+        Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
+        Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
+        Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
+    }
+
+    private void BootsItem(int newIndex, int oldIndex)
+    {
+        Event.SendReArmor(inventory.item[newIndex].armor, inventory.item[oldIndex].armor);
+        Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
+        Event.SendReSpike(inventory.item[newIndex].spike, inventory.item[oldIndex].spike);
+        Event.SendReSpeed(inventory.item[newIndex].speed, inventory.item[oldIndex].speed);
+    }
+
+    private void DicorationItem(int newIndex, int oldIndex)
+    {
+        Event.SendReHealth(inventory.item[newIndex].health, inventory.item[oldIndex].health);
+        Event.SendReResistiance(inventory.item[newIndex].resistance, inventory.item[oldIndex].resistance);
+    }
+    #endregion
+   
     private void CheckTheSameId(int oldIndex, int newIndex)
     {
-            if (inventory.item[oldIndex].id == inventory.item[newIndex].id)
-            {
-            Debug.Log("CheckTheSameId if");
-            (inventory.item[oldIndex], inventory.item[newIndex]) = (inventory.item[newIndex], inventory.item[oldIndex]);
-                inventory.itemPubl[oldIndex].transform.position = inventory.positionCell[oldIndex];
-                inventory.itemPubl[newIndex].transform.position = inventory.positionCell[newIndex];
-            }
-            else if (inventory.item[oldIndex].id != inventory.item[newIndex].id)
-            {
-            Debug.Log("CheckTheSameId if else if");
-            (inventory.item[oldIndex], inventory.item[newIndex]) = (inventory.item[newIndex], inventory.item[oldIndex]);
-                inventory.itemPubl[oldIndex].transform.position = inventory.positionCell[oldIndex];
-                inventory.itemPubl[newIndex].transform.position = inventory.positionCell[newIndex];
-        }     
+        (inventory.item[oldIndex], inventory.item[newIndex]) = (inventory.item[newIndex], inventory.item[oldIndex]);
+        inventory.itemPubl[oldIndex].transform.position = inventory.positionCell[oldIndex];
+        inventory.itemPubl[newIndex].transform.position = inventory.positionCell[newIndex];
     }
 
     private void ReDisplay(int oldIndex, int newIndex)
@@ -487,16 +444,19 @@ public class CurrentItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
         inventoryManager.GetComponent<Inventory>().DisplayItem();
         if (inventoryManager.GetComponent<Inventory>().itemPubl[newIndex].GetComponent<CurrentItem>().delete.activeInHierarchy)
         {
-            delete.SetActive(false);
-            inventory.panelStatistics.SetActive(false);
-            inventory.DeleteArray();
+            UnActiveDisp();
         }
         if (inventoryManager.GetComponent<Inventory>().itemPubl[oldIndex].GetComponent<CurrentItem>().delete.activeInHierarchy)
         {
-            delete.SetActive(false);
-            inventory.panelStatistics.SetActive(false);
-            inventory.DeleteArray();
+            UnActiveDisp();
         }
+    }
+
+    private void UnActiveDisp()
+    {
+        delete.SetActive(false);
+        inventory.panelStatistics.SetActive(false);
+        inventory.DeleteArray();
     }
     #endregion
 }

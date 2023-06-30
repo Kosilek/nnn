@@ -8,6 +8,11 @@ public class Coins : MonoBehaviour
     [SerializeField] private int coins;
     private void Start()
     {
+        InstValues();
+    }
+
+    private void InstValues()
+    {
         anim = GetComponent<Animator>();
     }
     

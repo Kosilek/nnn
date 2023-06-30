@@ -10,6 +10,15 @@ public class LevelManager : Singleton<LevelManager>
     protected override void Awake()
     {
         base.Awake();
+    }
+
+    private void Start()
+    {
+        AddEvent();
+    }
+
+    private void AddEvent()
+    {
         Event.OnEnemy.AddListener(AddEnemy);
         Event.OnRemoveEnemy.AddListener(RemoveEnemy);
         Event.OnInstIndexEnemy.AddListener(InstIndexEnemy);

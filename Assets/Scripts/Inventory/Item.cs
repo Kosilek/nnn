@@ -11,6 +11,7 @@ public class Item : MonoBehaviour
     GeneralActive ga = new GeneralActive();
     AttributesItem aT = new AttributesItem();
     [HideInInspector]public int valueAttributes;
+    public int levelLocation;
     private int lenghtAttributes;
     [Space]
     [Header("MainVariables")]
@@ -89,50 +90,86 @@ public class Item : MonoBehaviour
     public int vampirismInt = 0;
     #endregion
 
+    public bool sellItem;
+    public int coefCost = 15;
+    public int coefCostSell = 5;
+    public int cost;
+
+
     private void Start()
     {
-        if (dropItemBool)
-        {
-            Event.SendDropItem(gameObject);
-            Event.SendInstIndexDropItem();
-            x = transform.position.x;
-            y = transform.position.y;
-        }
+        DropItem();
+        CustomizbleItem();
+    }
+
+    private void CustomizbleItem()
+    {
         if (customizable == true)
         {
             return;
         }
         else if (customizable == false)
         {
-            if (dropItemBool == false)
-            {
-                levelItem = ga.Rand();
-            }           
-            valueAttributes = levelItem + 1;
-            SwitchAttributes(typeItem);
-           // lenghtAttributes = 0;
-            /* while (lenghtAttributes != valueAttributes)
-             {
-                 InstallAttribyte(typeItem);
-             }*/
-
-            for (int i = 0; i < valueAttributes; i++)
-            {
-                InstallAttribyte(typeItem);
-            }
-
-           // lenghtAttributes = 0;
-            InstallAtrributesStatics(typeItem);
+            GenerationOfCharacter();
         }
+    }
+
+    private void GenerationOfCharacter()
+    {              
+        GenerationValues();
+        AreCommonCharacter();
+        if (sellItem == false)
+            cost = coefCost * levelItem - coefCostSell * levelItem;
+    }
+
+    private void DropItem()
+    {
+        if (dropItemBool)
+        {
+            AddEvent();
+            InstValuesDrop();
+        }
+    }    
+
+    private void InstValuesDrop()
+    {
+        x = transform.position.x;
+        y = transform.position.y;
+    }
+
+    private void AddEvent()
+    {
+        Event.SendDropItem(gameObject);
+        Event.SendInstIndexDropItem();
     }
 
     public void RandItem(TypeItem typeItem)
     {
+        GenerationValues();
         damageInt = 0;
         damage = 0;
         vampirismInt = 0;
         vampirism = 0;
-        levelItem = ga.Rand();
+        AreCommonCharacter();
+        if (sellItem == true)
+            cost = coefCost * levelItem;
+    }
+
+    private void GenerationValues()
+    {
+        if (isStackable == true)
+        {
+            countItem = 2; // remake
+        }
+        else if (isStackable == false)
+        {
+            countItem = 1;
+        }
+    }
+
+    private void AreCommonCharacter()
+    {
+        GenerationLevel();
         valueAttributes = levelItem + 1;
         SwitchAttributes(typeItem);
         for (int i = 0; i < valueAttributes; i++)
@@ -142,6 +179,17 @@ public class Item : MonoBehaviour
         InstallAtrributesStatics(typeItem);
     }
 
+    private void GenerationLevel()
+    {
+        if (levelLocation >= 2)
+        {
+            levelItem = ga.Rand(levelLocation - 1, levelLocation + 2);
+        }
+        else if (levelLocation < 2)
+        {
+            levelItem = ga.Rand(1, levelLocation + 2);
+        }
+    }
     #region instAttributesItem
     private void InstallAttribyte(TypeItem type)
     {
@@ -188,7 +236,6 @@ public class Item : MonoBehaviour
                 vampirismInt++;
                 break;
         }
-      //  lenghtAttributes++;
     }
 
     private void InstallAttribyteHelmet()
@@ -207,7 +254,6 @@ public class Item : MonoBehaviour
                 spikeInt++;
                 break;
         }
-       // lenghtAttributes++;
     }
 
     private void InstallAttribyteBib()
@@ -226,7 +272,6 @@ public class Item : MonoBehaviour
                 spikeInt++;
                 break;
         }
-      //  lenghtAttributes++;
     }
 
     private void InstallAttribyteGloves()
@@ -245,7 +290,6 @@ public class Item : MonoBehaviour
                 spikeInt++;
                 break;
         }
-      //  lenghtAttributes++;
     }
 
     private void InstallAttribyteBoots()
@@ -267,7 +311,6 @@ public class Item : MonoBehaviour
                 speedInt++;
                 break;
         }
-       // lenghtAttributes++;
     }
 
     private void InstallAttribyteAmulet()
@@ -283,7 +326,6 @@ public class Item : MonoBehaviour
                 healthInt++;
                 break;
         }
-       // lenghtAttributes++;
     }
 
     private void InstallAttribyteRing()
@@ -299,7 +341,6 @@ public class Item : MonoBehaviour
                 healthInt++;
                 break;
         }
-      //  lenghtAttributes++;
     }
 
     private void InstallAttribyteBracelete()
@@ -315,7 +356,6 @@ public class Item : MonoBehaviour
                 healthInt++;
                 break;
         }
-      //  lenghtAttributes++;
     }
 
     private void SwitchAttributes(TypeItem type)
@@ -323,44 +363,58 @@ public class Item : MonoBehaviour
         switch (type)
         {
             case TypeItem.weapon:
-                damageBool = true;
-                vampirismBool = true;
+                WeaponItem();
                 break;
             case TypeItem.helmet:
-                armorBool = true;
-                healthBool = true;
-                spikeBool = true;  
+                ArmorItem();
                 break;
             case TypeItem.bib:
-                armorBool = true;
-                healthBool = true;
-                spikeBool = true;
+                ArmorItem();
                 break;
             case TypeItem.gloves:
-                armorBool = true;
-                healthBool = true;
-                spikeBool = true;
+                ArmorItem();
                 break;
             case TypeItem.boots:
-                armorBool = true;
-                healthBool = true;
-                spikeBool = true;
-                speedBool = true;
+                BootsItem();
                 break;
             case TypeItem.amulet:
-                resistanceBool = true;
-                healthBool = true;
+                DecorationItem();
                 break;
             case TypeItem.ring:
-                resistanceBool = true;
-                healthBool = true;
+                DecorationItem();
                 break;
             case TypeItem.bracelete:
-                resistanceBool = true;
-                healthBool = true;
+                DecorationItem();
                 break;
                 default: break;
         }
+    }
+
+    private void WeaponItem()
+    {
+        damageBool = true;
+        vampirismBool = true;
+    }
+
+    private void ArmorItem()
+    {
+        armorBool = true;
+        healthBool = true;
+        spikeBool = true;
+    }
+
+    private void BootsItem()
+    {
+        armorBool = true;
+        healthBool = true;
+        spikeBool = true;
+        speedBool = true;
+    }
+
+    private void DecorationItem()
+    {
+        resistanceBool = true;
+        healthBool = true;
     }
     #endregion
 
@@ -399,8 +453,85 @@ public class Item : MonoBehaviour
 
     private void InstallAtrributesStaticsWeapon()
     {
+        InstallAtrributesStaticsWeaponItem();
+    }
+
+    private void InstallAtrributesStaticsHelmet()
+    {
+        InstallAtrributesStaticsArmorItem();
+    }
+
+    private void InstallAtrributesStaticsBib()
+    {
+        InstallAtrributesStaticsArmorItem();
+    }
+
+    private void InstallAtrributesStaticsGloves()
+    {
+        InstallAtrributesStaticsArmorItem();
+    }
+
+    private void InstallAtrributesStaticsBoots()
+    {
+        InstallAtrributesStaticsBootsItem();
+    }
+
+    private void InstallAtrributesStaticsAmulet()
+    {
+        InstallAtrributesStaticsDicorationItem();
+    }
+
+    private void InstallAtrributesStaticsRing()
+    {
+        InstallAtrributesStaticsDicorationItem();
+    }
+
+    private void InstallAtrributesStaticsBracelete()
+    {
+        InstallAtrributesStaticsDicorationItem();
+    }
+
+    private void InstallAtrributesStaticsWeaponItem()
+    {
         damageInt += 1;
         int value = 0;
+        AtDamage(value);
+        value = 0;
+        AtVampirism(value);
+    }
+
+    private void InstallAtrributesStaticsArmorItem()
+    {
+        int value = 0;
+        AtArmor(value);
+        value = 0;
+        AtHealth(value);
+        value = 0;
+        AtSpike(value);
+    }
+
+    private void InstallAtrributesStaticsBootsItem()
+    {
+        int value = 0;
+        AtArmor(value);
+        value = 0;
+        AtHealth(value);
+        value = 0;
+        AtSpike(value);
+        value = 0;
+        AtSpeed(value);
+    }
+
+    private void InstallAtrributesStaticsDicorationItem()
+    {
+        int value = 0;
+        AtResistiance(value);
+        value = 0;
+        AtHealth(value);
+    }
+
+    private void AtDamage(int value)
+    {
         if (damageInt != 0)
         {
             value = damageInt;
@@ -409,20 +540,10 @@ public class Item : MonoBehaviour
                 damage += aT.Damage(levelItem);
             }
         }
-        value = 0;
-        if (vampirismInt != 0)
-        {
-            value = vampirismInt;
-            for (int i = 0; i < value; i++)
-            {
-                vampirism += aT.Vampirism(levelItem);
-            }
-        }
     }
 
-    private void InstallAtrributesStaticsHelmet()
+    private void AtArmor(int value)
     {
-        int value = 0;
         if (armorInt != 0)
         {
             value = armorInt;
@@ -431,7 +552,10 @@ public class Item : MonoBehaviour
                 armor += aT.Armor(levelItem);
             }
         }
-        value = 0;
+    }
+
+    private void AtHealth(int value)
+    {
         if (healthInt != 0)
         {
             value = healthInt;
@@ -440,7 +564,10 @@ public class Item : MonoBehaviour
                 health += aT.Heathl(levelItem);
             }
         }
-        value = 0;
+    }
+
+    private void AtSpike(int value)
+    {
         if (spikeInt != 0)
         {
             value = spikeInt;
@@ -451,98 +578,20 @@ public class Item : MonoBehaviour
         }
     }
 
-    private void InstallAtrributesStaticsBib()
+    private void AtResistiance(int value)
     {
-        int value = 0;
-        if (armorInt != 0)
+        if (resistanceInt != 0)
         {
-            value = armorInt;
+            value = resistanceInt;
             for (int i = 0; i < value; i++)
             {
-                armor += aT.Armor(levelItem);
-            }
-        }
-        value = 0;
-        if (healthInt != 0)
-        {
-            value = healthInt;
-            for (int i = 0; i < value; i++)
-            {
-                health += aT.Heathl(levelItem);
-            }
-        }
-        value = 0;
-        if (spikeInt != 0)
-        {
-            value = spikeInt;
-            for (int i = 0; i < value; i++)
-            {
-                spike += aT.Spike(levelItem);
+                resistance += aT.Resistance(levelItem);
             }
         }
     }
 
-    private void InstallAtrributesStaticsGloves()
+    private void AtSpeed(int value)
     {
-        int value = 0;
-        if (armorInt != 0)
-        {
-            value = armorInt;
-            for (int i = 0; i < value; i++)
-            {
-                armor += aT.Armor(levelItem);
-            }
-        }
-        value = 0;
-        if (healthInt != 0)
-        {
-            value = healthInt;
-            for (int i = 0; i < value; i++)
-            {
-                health += aT.Heathl(levelItem);
-            }
-        }
-        value = 0;
-        if (spikeInt != 0)
-        {
-            value = spikeInt;
-            for (int i = 0; i < value; i++)
-            {
-                spike += aT.Spike(levelItem);
-            }
-        }
-    }
-
-    private void InstallAtrributesStaticsBoots()
-    {
-        int value = 0;
-        if (armorInt != 0)
-        {
-            value = armorInt;
-            for (int i = 0; i < value; i++)
-            {
-                armor += aT.Armor(levelItem);
-            }
-        }
-        value = 0;
-        if (healthInt != 0)
-        {
-            value = healthInt;
-            for (int i = 0; i < value; i++)
-            {
-                health += aT.Heathl(levelItem);
-            }
-        }
-        value = 0;
-        if (spikeInt != 0)
-        {
-            value = spikeInt;
-            for (int i = 0; i < value; i++)
-            {
-                spike += aT.Spike(levelItem);
-            }
-        }
-        value = 0;
         if (speedInt != 0)
         {
             value = speedInt;
@@ -553,74 +602,25 @@ public class Item : MonoBehaviour
         }
     }
 
-    private void InstallAtrributesStaticsAmulet()
+    private void AtVampirism(int value)
     {
-        int value = 0;
-        if (resistanceInt != 0)
+        if (vampirismInt != 0)
         {
-            value = resistanceInt;
+            value = vampirismInt;
             for (int i = 0; i < value; i++)
             {
-                resistance += aT.Resistance(levelItem);
-            }
-        }
-        value = 0;
-        if (healthInt != 0)
-        {
-            value = healthInt;
-            for (int i = 0; i < value; i++)
-            {
-                health += aT.Heathl(levelItem);
-            }
-        }
-    }
-
-    private void InstallAtrributesStaticsRing()
-    {
-        int value = 0;
-        if (resistanceInt != 0)
-        {
-            value = resistanceInt;
-            for (int i = 0; i < value; i++)
-            {
-                resistance += aT.Resistance(levelItem);
-            }
-        }
-        value = 0;
-        if (healthInt != 0)
-        {
-            value = healthInt;
-            for (int i = 0; i < value; i++)
-            {
-                health += aT.Heathl(levelItem);
-            }
-        }
-    }
-
-    private void InstallAtrributesStaticsBracelete()
-    {
-        int value = 0;
-        if (resistanceInt != 0)
-        {
-            value = resistanceInt;
-            for (int i = 0; i < value; i++)
-            {
-                resistance += aT.Resistance(levelItem);
-            }
-        }
-        value = 0;
-        if (healthInt != 0)
-        {
-            value = healthInt;
-            for (int i = 0; i < value; i++)
-            {
-                health += aT.Heathl(levelItem);
+                vampirism += aT.Vampirism(levelItem);
             }
         }
     }
     #endregion
 
     private void OnTriggerEnter2D(Collider2D collision)
+    {
+        PickUpAnObject(collision);
+    }
+
+    private void PickUpAnObject(Collider2D collision)
     {
         if (collision.GetComponent<Player>())
         {

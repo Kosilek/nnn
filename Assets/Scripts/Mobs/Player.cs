@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    //переменные связанные с упр персонажа
+    [Header("Player Cntr")]
     public float speed;
     [SerializeField] private float vSpeed;
     private float direction;
-    // булевы переменные для проверок
+    // bool check
     public bool isGround;
     private bool facingRight = true;
-    // переменные для управления встроенными компонентами 
+
     private Rigidbody2D rb;
     private Animator anim;
-    // переменные для передачи данных в другие скрипты
+
     public static GameObject player;
     public float xp;
     public static int lvl = 1;
@@ -23,17 +23,31 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        InstValuesAwake();
+    }
+
+    private void InstValuesAwake()
+    {
         player = gameObject;
         Physics2D.queriesStartInColliders = false;
     }
 
     private void Start()
     {
+        InstValues();
+        AddEvent();
+    }
+
+    private void InstValues()
+    {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+    }
+
+    private void AddEvent()
+    {
         Event.OnReSpeed.AddListener(ReSpeed);
         Event.OnAddXp.AddListener(xpPlus);
-        //Event.OnReSpeed.AddListener(ReSpeed);
     }
 
     private void Update()
@@ -48,7 +62,7 @@ public class Player : MonoBehaviour
         Flip();
     }
 
-    private void Flip() //разворот
+    private void Flip()
     {
         if (direction > 0 && !facingRight)
         {
@@ -65,7 +79,7 @@ public class Player : MonoBehaviour
     {
         speed = speed - oldSpeed + newSpeed;
     }
-    //управление
+
     #region Controll 
     public void MoovLeft()
     {
@@ -89,12 +103,7 @@ public class Player : MonoBehaviour
 
     public void Attack()
     {
-        anim.SetBool("Attack", true);
-    }
-
-    public void StopAttack()
-    {
-        anim.SetBool("Attack", false);
+        anim.SetTrigger(MeaningString.attack);
     }
     #endregion
 

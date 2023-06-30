@@ -16,7 +16,17 @@ public class MiliENemy : MonoBehaviour
     #endregion
     [SerializeField] private Transform cliffDetection;
     [SerializeField] private Transform blockDetection;
-    int layerMaskOnlyPlayer = 1 << 8;
+    private Enemy enemy;
+
+    private void Start()
+    {
+        InstValues();
+    }
+
+    private void InstValues()
+    {
+        enemy = GetComponent<Enemy>();
+    }
 
     private void Update()
     {
@@ -25,32 +35,31 @@ public class MiliENemy : MonoBehaviour
 
     public void AttackRay()
     {
-        if (GetComponent<Enemy>().facingRight)
+        if (enemy.facingRight)
         {
-            attackRay = Physics2D.Raycast(blockDetection.position, blockDetection.localScale.x * Vector2.right, attackRayDistance, layerMaskOnlyPlayer);
+            attackRay = Physics2D.Raycast(blockDetection.position, blockDetection.localScale.x * Vector2.right, attackRayDistance, enemy.layerMaskOnlyPlayer);
         }
         else if (!GetComponent<Enemy>().facingRight)
         {
-            attackRay = Physics2D.Raycast(blockDetection.position, blockDetection.localScale.x * Vector2.left, attackRayDistance, layerMaskOnlyPlayer);
+            attackRay = Physics2D.Raycast(blockDetection.position, blockDetection.localScale.x * Vector2.left, attackRayDistance, enemy.layerMaskOnlyPlayer);
         }
         if (attackRay)
         {
-            GetComponent<Enemy>().moov = false;
-            Debug.Log($"attackRay = {attackRay.collider}");
+            enemy.moov = false;
             if (attackRay.collider.GetComponent<Player>())
             {
-                GetComponent<Enemy>().Attack();
+                enemy.Attack();
             }
         }
         else if (!attackRay)
         {
-            GetComponent<Enemy>().moov = true;
+            enemy.moov = true;
         }
     }
 
     public void FlipEnemy()
     {
-        if (GetComponent<Enemy>().facingRight)
+        if (enemy.facingRight)
         {
             blockInfo = Physics2D.Raycast(blockDetection.position, blockDetection.localScale.x * Vector2.right, distBlockInfo);
         }
@@ -60,54 +69,51 @@ public class MiliENemy : MonoBehaviour
         }
         if (blockInfo)
         {
-            if (blockInfo.collider.name == MeaningString.ground && !GetComponent<Enemy>().facingRight)
+            if (blockInfo.collider.name == MeaningString.ground && !enemy.facingRight)
             {
-                GetComponent<Enemy>().direction = 1;
-                GetComponent<Enemy>().facingRight = Character.Flip(transform, GetComponent<Enemy>().facingRight);
+                enemy.direction = 1;
+                enemy.facingRight = Character.Flip(transform, enemy.facingRight);
             }
-            else if (blockInfo.collider.name == MeaningString.ground && GetComponent<Enemy>().facingRight)
+            else if (blockInfo.collider.name == MeaningString.ground && enemy.facingRight)
             {
-                GetComponent<Enemy>().direction = -1;
-                GetComponent<Enemy>().facingRight = Character.Flip(transform, GetComponent<Enemy>().facingRight);
+                enemy.direction = -1;
+                enemy.facingRight = Character.Flip(transform, enemy.facingRight);
             }
         }
-        if (cliffInfo == false && !GetComponent<Enemy>().facingRight)
+        if (cliffInfo == false && !enemy.facingRight)
         {
-            GetComponent<Enemy>().direction = 1;
-            GetComponent<Enemy>().facingRight = Character.Flip(transform, GetComponent<Enemy>().facingRight);
+            enemy.direction = 1;
+            enemy.facingRight = Character.Flip(transform, enemy.facingRight);
 
         }
-        else if (cliffInfo == false && GetComponent<Enemy>().facingRight)
+        else if (cliffInfo == false && enemy.facingRight)
         {
-            GetComponent<Enemy>().direction = -1;
-            GetComponent<Enemy>().facingRight = Character.Flip(transform, GetComponent<Enemy>().facingRight);
+            enemy.direction = -1;
+            enemy.facingRight = Character.Flip(transform, enemy.facingRight);
         }
     }
 
     public void FlipEnemyTrigger()
     {
-        if (GetComponent<Enemy>().facingRight)
+        if (enemy.facingRight)
         {
-            playerDetection = Physics2D.Raycast(transform.position, transform.localScale.x * Vector3.left, playerDistance, layerMaskOnlyPlayer);
+            playerDetection = Physics2D.Raycast(transform.position, transform.localScale.x * Vector3.left, playerDistance, enemy.layerMaskOnlyPlayer);
         }
-        else if (!GetComponent<Enemy>().facingRight)
+        else if (!enemy.facingRight)
         {
-            playerDetection = Physics2D.Raycast(transform.position, transform.localScale.x * Vector3.right, playerDistance, layerMaskOnlyPlayer);
+            playerDetection = Physics2D.Raycast(transform.position, transform.localScale.x * Vector3.right, playerDistance, enemy.layerMaskOnlyPlayer);
         }
         if (playerDetection)
         {
-            //  Debug.Log(playerDetection.collider.name);
-            if (playerDetection.collider.GetComponent<Player>() && !GetComponent<Enemy>().facingRight)
+            if (playerDetection.collider.GetComponent<Player>() && !enemy.facingRight)
             {
-                //  Debug.Log("left");
-                GetComponent<Enemy>().direction = 1;
-                GetComponent<Enemy>().facingRight = Character.Flip(transform, GetComponent<Enemy>().facingRight);
+                enemy.direction = 1;
+                enemy.facingRight = Character.Flip(transform, enemy.facingRight);
             }
-            else if (playerDetection.collider.GetComponent<Player>() && GetComponent<Enemy>().facingRight)
+            else if (playerDetection.collider.GetComponent<Player>() && enemy.facingRight)
             {
-                //   Debug.Log("right");
-                GetComponent<Enemy>().direction = -1;
-                GetComponent<Enemy>().facingRight = Character.Flip(transform, GetComponent<Enemy>().facingRight);
+                enemy.direction = -1;
+                enemy.facingRight = Character.Flip(transform, enemy.facingRight);
             }
         }
     }

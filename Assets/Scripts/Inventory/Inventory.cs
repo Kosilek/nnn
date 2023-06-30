@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class Inventory : Singleton<Inventory>
 {
@@ -22,30 +24,52 @@ public class Inventory : Singleton<Inventory>
 
     private int[] checkStatistics;
 
+    #region ExitInventory
+    [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private GameObject shopPanel;
+    #endregion
+
     protected override void Awake()
     {
         base.Awake();
-
     }
 
     private void Start()
     {
+        InstValues();
+        CreateList();
+        AddEvent();
+        UnActiv();
+    }
+    private void InstValues()
+    {
         checkStatistics = new int[7];
         item = new List<Item>();
         positionCell = new List<Vector3>();
+    }
+
+    private void CreateList()
+    {
         for (int i = 0; i < itemPubl.Count; i++)
         {
             itemPubl[i].GetComponent<CurrentItem>().index = i;
             positionCell.Add(itemPubl[i].transform.position);
             item.Add(new Item());
         }
+    }
 
+    private void UnActiv()
+    {
+        inventoryPanel.SetActive(false);
         for (int i = 0; i < nameStatistics.Length; i++)
         {
             nameStatistics[i].SetActive(false);
             valueStatistics[i].SetActive(false);
         }
+    }
 
+    private void AddEvent()
+    {
         Event.OnAddStackableItem.AddListener(AddStackableItem);
         Event.OnAddUnStackableItem.AddListener(AddUnStackableItem);
     }
@@ -54,27 +78,39 @@ public class Inventory : Singleton<Inventory>
     public void panelStatiscticsActive(int index)
     {
         int value;
-        string nameStatisticsA;
-        float valueStatisticsA;
+        string nameStatisticsA = "";
+        float valueStatisticsA = 0f;
         value = checkActiveStatistics(index);
-       // Debug.Log(value);
         TextMainItem(index);
+        PanelStatisticsFilling(value, nameStatisticsA, valueStatisticsA, index);
+    }
+
+    private void PanelStatisticsFilling(int value, string nameStatisticsA, float valueStatisticsA, int index)
+    {
         for (int i = 0; i < value; i++)
         {
-            nameStatistics[i].SetActive(true);
-            valueStatistics[i].SetActive(true);
-            for (int j = 0; j < checkStatistics.Length; j++)
+            ActiveUI(i);
+            TextFilling(nameStatisticsA, valueStatisticsA, index, i);
+        }
+    }
+
+    private void ActiveUI(int i)
+    {
+        nameStatistics[i].SetActive(true);
+        valueStatistics[i].SetActive(true);
+    }
+
+    private void TextFilling(string nameStatisticsA, float valueStatisticsA,  int index, int i)
+    {
+        for (int j = 0; j < checkStatistics.Length; j++)
+        {
+            if (checkStatistics[j] != 0)
             {
-                if (checkStatistics[j] != 0)
-                {
-                   // Debug.Log($"j = {j}");
-                    (nameStatisticsA, valueStatisticsA) = AttributeDefinition(j, index);
-                    txtNameStatistics[i].text = nameStatisticsA.ToString();
-                    txtValueStatistics[i].text = valueStatisticsA.ToString();
-                    Debug.Log($"i = {i}, name = {nameStatisticsA}, value = {valueStatisticsA}");
-                    checkStatistics[j] = 0;
-                    break;
-                }
+                (nameStatisticsA, valueStatisticsA) = AttributeDefinition(j, index);
+                txtNameStatistics[i].text = nameStatisticsA.ToString();
+                txtValueStatistics[i].text = valueStatisticsA.ToString();
+                checkStatistics[j] = 0;
+                break;
             }
         }
     }
@@ -134,6 +170,12 @@ public class Inventory : Singleton<Inventory>
 
     public void DeleteArray()
     {
+        ZeroingCheck();
+        UnActiveUI();
+    }
+
+    private void ZeroingCheck()
+    {
         for (int i = 0; i < checkStatistics.Length; i++)
         {
             if (checkStatistics[i] != 0)
@@ -141,7 +183,11 @@ public class Inventory : Singleton<Inventory>
                 checkStatistics[i] = 0;
             }
         }
-        for(int i = 0; i < nameStatistics.Length; i++)
+    }
+
+    private void UnActiveUI()
+    {
+        for (int i = 0; i < nameStatistics.Length; i++)
         {
             nameStatistics[i].SetActive(false);
             valueStatistics[i].SetActive(false);
@@ -150,19 +196,53 @@ public class Inventory : Singleton<Inventory>
     #endregion
 
     #region BuyItem
+    public void BuyItem(Item items)
+    {
+        if (items.isStackable)
+        {
+            AddBuyStackableItem(items);
+        }
+        else if (!items.isStackable)
+        {
+            AddBuyUnStackableItem(items);
+        }
+    }
+
+    private void AddBuyStackableItem(Item items)
+    {
+        for (int i = 0; i < item.Count - 9; i++)
+        {
+            if (item[i].id == items.id)
+            {
+                item[i].countItem += items.countItem;
+                return;
+            }
+        }
+        AddBuyUnStackableItem(items);
+    }
+
+    private void AddBuyUnStackableItem(Item items)
+    {
+        for (int i = 0; i < item.Count - 9; i++)
+        {
+            if (item[i].id == 0)
+            {
+                item[i] = items;
+                Debug.Log(item[i].id);
+                break;
+            }
+        }
+    }
     #endregion
 
     public static void PickupTrigger(GameObject items, bool isStackable, int id, int itemCount)
     {
-        Debug.Log("pickupTrigger");
         if (isStackable)
         {
-            Debug.Log("pickupTrigger true");
             Event.SendAddStackableItem(items, id, itemCount);
         }
         else if (!isStackable)
         {
-            Debug.Log("pickupTrigger false");
             Event.SendAddUnStackableItem(items);
         }
     }
@@ -188,9 +268,7 @@ public class Inventory : Singleton<Inventory>
         {
             if (item[i].id == 0)
             {
-                Debug.Log("AddUnStackableItem");
                 item[i] = items.GetComponent<Item>();
-                Debug.Log(item[i].id);
                 if (item[i].dropItemBool)
                 Destroy(items);
                 break;
@@ -206,6 +284,10 @@ public class Inventory : Singleton<Inventory>
         txt.text = null;
     }
 
+    public int CostSellItem(int index)
+    {
+        return item[index].cost;
+    }
 
     public void DisplayItem()
     {
@@ -235,6 +317,21 @@ public class Inventory : Singleton<Inventory>
                 img.sprite = null;
                 txt.text = null;
             }
+        }
+    }
+
+    public void ExitInventory()
+    {
+        if (!CurrentItem.sellItem)
+        {
+            inventoryPanel.SetActive(false);
+        }
+        else if (CurrentItem.sellItem)
+        {
+            CurrentItem.sellItem = false;
+            inventoryPanel.SetActive(false);
+            shopPanel.SetActive(true);
+
         }
     }
 

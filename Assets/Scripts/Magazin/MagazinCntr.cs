@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class MagazinCntr : MonoBehaviour
 {
+    public int levelLocation;
+
     [SerializeField] private List<GameObject> itemMagazin;
     [SerializeField] private List<GameObject> itemMagazinIcon;
     private List<int> indexItemMagazin = new List<int>();
@@ -12,170 +14,251 @@ public class MagazinCntr : MonoBehaviour
     [SerializeField]private List<Item> itemMagazinSell = new List<Item>();
     [SerializeField] private List<Item> itemMagazinSellStat = new List<Item>();
     GeneralActive ga = new GeneralActive();
-    /*
-     * Then remake it under an adequate option where there will be only one type of text variable
-     */
+    [SerializeField] private GameObject panelShop;
     #region StatShopItem    
-    [Header("StatItemSword")]
-    [SerializeField] private GameObject StatShopItemSword;
-    [SerializeField] private Text lvlItemSw;
-    [SerializeField] private Text nameItemSw;
-    [SerializeField] private Text damagaItem;
-    [SerializeField] private Text vampirismItem;
-    [SerializeField] private Text descriptionItem;
-    [Header("StatItemArmor")]
-    [SerializeField] private GameObject StatShopItemArmor;
-    [SerializeField] private Text lvlItemArm;
-    [SerializeField] private Text nameItemArm;
-    [SerializeField] private Text armorItemArm;
-    [SerializeField] private Text healthItemArm;
-    [SerializeField] private Text spikeItemArm;
-    [SerializeField] private Text descriptionItemArm;
-    [Header("StatItemBoots")]
-    [SerializeField] private GameObject StatShopItemBoots;
-    [SerializeField] private Text lvlItemBoo;
-    [SerializeField] private Text nameItemBoo;
-    [SerializeField] private Text armorItemBoo;
-    [SerializeField] private Text healthItemBoo;
-    [SerializeField] private Text spikeItemBoo;
-    [SerializeField] private Text speedItem;
-    [SerializeField] private Text descriptionItemBoo;
-    [Header("StatItemDecoration")]
-    [SerializeField] private GameObject StatShopItemDecoration;
-    [SerializeField] private Text lvlItemDec;
-    [SerializeField] private Text nameItemDec;
-    [SerializeField] private Text healthItemDec;
-    [SerializeField] private Text resistanceItemDec;
-    [SerializeField] private Text descriptionItemDec;
+    [Header("StatShopItem")]
+    [SerializeField] private GameObject statShopText;
+    [SerializeField] private Text nameItemText;
+    [SerializeField] private Text levelItemText;
+    [SerializeField] private Text statText1Text;
+    [SerializeField] private Text statText2Text;
+    [SerializeField] private Text statText3Text;
+    [SerializeField] private Text statText4Text;
+    [SerializeField] private Text descriptionStatText;
+    [SerializeField] private Text costItem;
     #endregion
     private int index;
-    Inventory inventory = new Inventory();
+    public Inventory inventory = new Inventory();
+    public Money money = new Money();
     private void Start()
+    {
+        InstValues();
+       // CreateListIndexItem();
+       // CreateListItemStat();
+        UnActivUI();
+        TextNull();
+        AddEvent();
+    }
+
+    private void AddEvent()
+    {
+        Event.OnLevelLoction.AddListener(TakeLevelLocation);
+        Event.OnCreateListIndexItem.AddListener(CreateListIndexItem);
+        Event.OnCreateListItemStat.AddListener(CreateListItemStat);
+    }
+
+    private void UnActivUI()
+    {
+        panelShop.SetActive(false);
+        statShopText.SetActive(false);
+    }
+
+    private void CreateListItemStat()
+    {
+        for (int i = 0; i < cellMagazin.Count; i++)
+        {
+            Item q = new Item();
+            int j = ga.Rand(0, itemMagazin.Count);
+            cellMagazin[i].GetComponent<Image>().sprite = itemMagazinIcon[j].GetComponent<Image>().sprite;
+            itemMagazinSell.Add(itemMagazin[j].GetComponent<Item>());
+            if (itemMagazinSell[i].isStackable)
+            q.isStackable = true;
+            q.sellItem = true;
+            q.levelLocation = levelLocation;
+            q.RandItem(itemMagazinSell[i].typeItem);
+            itemMagazinSellStat.Add(q);
+        }
+    }
+
+    private void CreateListIndexItem()
     {
         for (int i = 0; i < itemMagazin.Count; i++)
         {
             indexItemMagazin.Add(i);
         }
-
-      /*  for (int i = 0; i < cellMagazin.Count;i++)
-        {
-            itemMagazinSell.Add(new Item());
-        }
-
-        for (int i = 0; i < cellMagazin.Count; i++)
-        {
-            itemMagazinSellStat.Add(new Item());
-        }*/
-
-        for (int i = 0;i < cellMagazin.Count;i++)
-        {
-            Item q = new Item();
-            int j = ga.Rand(0, itemMagazin.Count);
-           // Debug.Log($"j = {j}");
-            cellMagazin[i].GetComponent<Image>().sprite = itemMagazinIcon[j].GetComponent<Image>().sprite;
-            itemMagazinSell.Add(itemMagazin[j].GetComponent<Item>());
-           // itemMagazinSell[i] = itemMagazin[j].GetComponent<Item>();
-            //itemMagazinSell[i].RandItem();
-            q.RandItem(itemMagazinSell[i].typeItem);
-            itemMagazinSellStat.Add(q);
-            //itemMagazinSellStat[i] = q;
-          //  itemMagazinSell[i].damage = 1f;
-        }
     }
 
+    private void InstValues()
+    {
+        inventory = GetComponent<Inventory>();
+        money = GetComponent<Money>();
+    }
+
+    private void TextNull()
+    {
+        statText1Text.text = null;
+        statText2Text.text = null;
+        statText3Text.text = null;
+        statText4Text.text = null;
+    }
+
+    #region StatShopItemAction
     public void StatShopItem(int i)
     {
-        if (StatShopItemSword.activeInHierarchy == true && itemMagazinSell[i] != null)
+        if (itemMagazinSell[i].typeItem != TypeItem.rest)
         {
-            StatShopItemSword.SetActive(false);
-            index = -1;
-        }
-        else if (StatShopItemSword.activeInHierarchy == false && itemMagazinSell[i] != null)
-        {
-            StatShopItemSword.SetActive(true);
-            index = i;
-        }
-        if (itemMagazinSell[i] != null)
-        {
-            switch (itemMagazinSellStat[i].typeItem)
+            ActiveStatShop(i);
+            if (itemMagazinSell[i] != null)
             {
-                case TypeItem.weapon:
-                    ItemWeapon(i);
-                    break;
-                case TypeItem.helmet:
-                    ItemArmor(i);
-                    break;
-                case TypeItem.bib:
-                    ItemArmor(i);
-                    break;
-                case TypeItem.gloves:
-                    ItemArmor(i);
-                    break;
-                case TypeItem.boots:
-                    ItemBoots(i);
-                    break;
-                case TypeItem.amulet:
-                    ItemDecotation(i);
-                    break;
-                case TypeItem.ring:
-                    ItemDecotation(i);
-                    break;
-                case TypeItem.bracelete:
-                    ItemDecotation(i);
-                    break;
+                SetTextMain(i);
+                SwitchItemType(i);
             }
         }
     }
-    #region StatShopItemAction
+
+    private void SetTextMain(int i)
+    {
+        nameItemText.text = itemMagazinSell[i].name;
+        levelItemText.text = "lvl: " + itemMagazinSellStat[i].levelItem;
+        descriptionStatText.text = itemMagazinSell[i].description.ToString();
+        costItem.text = itemMagazinSellStat[i].cost.ToString();
+    }
+
+    private void ActiveStatShop(int i)
+    {
+        if (statShopText.activeInHierarchy == true && itemMagazinSell[i] != null)
+        {
+            statShopText.SetActive(false);
+            index = -1;
+        }
+        else if (statShopText.activeInHierarchy == false && itemMagazinSell[i] != null)
+        {
+            statShopText.SetActive(true);
+            TextNull();
+            index = i;
+        }
+    }
+
+    private void SwitchItemType(int i)
+    {
+        switch (itemMagazinSellStat[i].typeItem)
+        {
+            case TypeItem.weapon:
+                ItemWeapon(i);
+                break;
+            case TypeItem.helmet:
+                ItemArmor(i);
+                break;
+            case TypeItem.bib:
+                ItemArmor(i);
+                break;
+            case TypeItem.gloves:
+                ItemArmor(i);
+                break;
+            case TypeItem.boots:
+                ItemBoots(i);
+                break;
+            case TypeItem.amulet:
+                ItemDecotation(i);
+                break;
+            case TypeItem.ring:
+                ItemDecotation(i);
+                break;
+            case TypeItem.bracelete:
+                ItemDecotation(i);
+                break;
+        }
+    }
+
     private void ItemWeapon(int i)
     {
-        lvlItemSw.text = "lvl: " + itemMagazinSellStat[i].levelItem.ToString();
-        nameItemSw.text = itemMagazinSell[i].name;
-        damagaItem.text = "Damage: " + itemMagazinSellStat[i].damage.ToString();
-        vampirismItem.text = "Vampirism: " + itemMagazinSellStat[i].vampirism.ToString();
-        descriptionItem.text = itemMagazinSell[i].description.ToString();
+       
+        statText1Text.text = "Damage: " + itemMagazinSellStat[i].damage.ToString();
+        statText2Text.text = "Vampirism: " + itemMagazinSellStat[i].vampirism.ToString();
+        statText3Text.text = null;
+        statText4Text.text = null;
     }
 
     private void ItemArmor(int i)
     {
-        lvlItemSw.text = "lvl: " +  itemMagazinSellStat[i].levelItem.ToString();
-        nameItemArm.text = itemMagazinSellStat[i].name;
-        armorItemArm.text = "Armor: " + itemMagazinSellStat[i].armor.ToString();
-        healthItemArm.text = "Health: " + itemMagazinSellStat[i].health.ToString();
-        spikeItemArm.text = "Spike: " + itemMagazinSellStat[i].spike.ToString();
-        descriptionItemArm.text = itemMagazinSellStat[i].description.ToString();
+     
+        statText1Text.text = "Armor: " + itemMagazinSellStat[i].armor.ToString();
+        statText2Text.text = "Health: " + itemMagazinSellStat[i].health.ToString();
+        statText3Text.text = "Spike: " + itemMagazinSellStat[i].spike.ToString();
+        statText4Text.text = null;
     }
 
     private void ItemBoots(int i)
     {
-        lvlItemSw.text = "lvl: " + itemMagazinSellStat[i].levelItem.ToString();
-        nameItemBoo.text = itemMagazinSellStat[i].name;
-        armorItemBoo.text = "Armor: " + itemMagazinSellStat[i].armor.ToString();
-        healthItemBoo.text = "Health: " + itemMagazinSellStat[i].health.ToString();
-        spikeItemBoo.text = "Spike: " + itemMagazinSellStat[i].spike.ToString();
-        speedItem.text = "Speed: " + itemMagazinSellStat[i].speed.ToString();
-        descriptionItemBoo.text = itemMagazinSellStat[i].description.ToString();
+      
+        statText1Text.text = "Armor: " + itemMagazinSellStat[i].armor.ToString();
+        statText2Text.text = "Health: " + itemMagazinSellStat[i].health.ToString();
+        statText3Text.text = "Spike: " + itemMagazinSellStat[i].spike.ToString();
+        statText4Text.text = "Speed: " + itemMagazinSellStat[i].speed.ToString();
     }
 
     private void ItemDecotation(int i)
     {
-        lvlItemSw.text = "lvl: " + itemMagazinSellStat[i].levelItem.ToString();
-        nameItemDec.text = itemMagazinSellStat[i].name;
-        resistanceItemDec.text = "Resistance: " + itemMagazinSellStat[i].resistance.ToString();
-        healthItemDec.text = "Health: " + itemMagazinSellStat[i].health.ToString() ;
-        descriptionItemDec.text = itemMagazinSellStat[i].description.ToString();
+        
+        statText1Text.text = "Resistance: " + itemMagazinSellStat[i].resistance.ToString();
+        statText2Text.text = "Health: " + itemMagazinSellStat[i].health.ToString() ;
+        statText3Text.text = null;
+        statText4Text.text = null;
     }
     #endregion
 
     public void BuyItem()
     {
-        Debug.Log($"buyItem index = {index}");
         if (index >= 0)
         {
-            cellMagazin[index].GetComponent<Image>().sprite = null;
-            itemMagazinSell[index] = null;
-            itemMagazinSellStat[index] = null;
-            StatShopItemSword.SetActive(false);
+            Item n = new Item();
+            n = CopyItem(n);
+            if (money.countSouls >= n.cost)
+            {
+                inventory.BuyItem(n);
+                Event.SendTakeCoinsSouls(n.cost);
+                cellMagazin[index].GetComponent<Image>().sprite = null;
+                itemMagazinSell[index] = null;
+                itemMagazinSellStat[index] = null;
+                statShopText.SetActive(false);
+                n.cost = n.coefCost * n.levelItem - n.coefCostSell * n.levelItem;
+            }
+            else return;
         }
+    }
+
+    private Item CopyItem(Item items)
+    {
+        items.cost = itemMagazinSellStat[index].cost;
+        items.levelItem = itemMagazinSellStat[index].levelItem;
+        items.id = itemMagazinSell[index].id;
+        items.nameItem = itemMagazinSell[index].nameItem;
+        items.pathIcon = itemMagazinSell[index].pathIcon;
+        items.description = itemMagazinSell[index].description;
+        items.countItem = itemMagazinSellStat[index].countItem;
+        items.damage = itemMagazinSellStat[index].damage;
+        items.damageInt = itemMagazinSellStat[index].damageInt;
+        items.damageBool = itemMagazinSellStat[index].damageBool;
+        items.armor = itemMagazinSellStat[index].armor;
+        items.armorInt = itemMagazinSellStat[index].armorInt;
+        items.armorBool = itemMagazinSellStat[index].armorBool;
+        items.health = itemMagazinSellStat[index].health;
+        items.healthInt = itemMagazinSellStat[index].healthInt;
+        items.healthBool = itemMagazinSellStat[index].healthBool;
+        items.resistance = itemMagazinSellStat[index].resistance;
+        items.resistanceInt = itemMagazinSellStat[index].resistanceInt;
+        items.resistanceBool = itemMagazinSellStat[index].resistanceBool;
+        items.spike = itemMagazinSellStat[index].spike;
+        items.spikeInt = itemMagazinSellStat[index].spikeInt;
+        items.spikeBool = itemMagazinSellStat[index].spikeBool;
+        items.speed = itemMagazinSellStat[index].speed;
+        items.speedInt = itemMagazinSellStat[index].speedInt;
+        items.speedBool = itemMagazinSellStat[index].speedBool;
+        items.vampirism = itemMagazinSellStat[index].vampirism;
+        items.vampirismInt = itemMagazinSellStat[index].vampirismInt;
+        items.vampirismBool = itemMagazinSellStat[index].vampirismBool;
+        return items;
+    }
+
+    public void ButtonSell()
+    {
+        statShopText.SetActive(false);
+        inventory.DisplayItem();
+        CurrentItem.sellItem = true;
+    }
+
+    public void TakeLevelLocation(int levelLocation)
+    {
+        this.levelLocation = levelLocation;
     }
 }

@@ -9,6 +9,11 @@ public class DropItem : Singleton<DropItem>
     protected override void Awake()
     {
         base.Awake();
+        AddEvent();
+    }
+
+    private void AddEvent()
+    {
         Event.OnDropItem.AddListener(AddDropItem);
         Event.OnInstIndexDropItem.AddListener(InstIndexDropItem);
         Event.OnRemoveDropItem.AddListener(RemoveDropItem);

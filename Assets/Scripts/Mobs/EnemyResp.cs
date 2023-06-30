@@ -16,9 +16,13 @@ public class EnemyResp : MonoBehaviour
     public TypeEnemySpecial typeSpecial;
     private void Start()
     {
-        Event.SendEnemyResp(gameObject);
-        Event.SendInstIndexEnemyResp();
+        InvokeEvent();
         NameTypeEnemy();
+        InstValues();
+    }
+
+    private void InstValues()
+    {
         enemyRef.GetComponent<Enemy>().levelLocation = lvlLocation;
         enemyRef.GetComponent<Enemy>().randMonstr = randMonstr;
         enemyRef.GetComponent<Enemy>().typeEnemy = type;
@@ -27,26 +31,37 @@ public class EnemyResp : MonoBehaviour
         enemyCopy.transform.position = transform.position;
     }
 
+    private void InvokeEvent()
+    {
+        Event.SendEnemyResp(gameObject);
+        Event.SendInstIndexEnemyResp();
+    }
+
     private void NameTypeEnemy()
     {
         switch(typeSpecial)
         {
             case TypeEnemySpecial.normal:
-                enemyRef = Resources.Load(MeaningString.enemy);
+                LoadEnemy(MeaningString.enemy);
                 break;
             case TypeEnemySpecial.knight:
-                enemyRef = Resources.Load(MeaningString.enemyKnight);
+                LoadEnemy(MeaningString.enemyKnight);
                 break;
             case TypeEnemySpecial.magic:
-                enemyRef = Resources.Load(MeaningString.enemyMagic);
+                LoadEnemy(MeaningString.enemyMagic);
                 break;
             case TypeEnemySpecial.sniper:
-                enemyRef = Resources.Load(MeaningString.enemySniper);
+                LoadEnemy(MeaningString.enemySniper);
                 break;
             case TypeEnemySpecial.vampir:
-                enemyRef = Resources.Load(MeaningString.enemyVampire);
+                LoadEnemy(MeaningString.enemyVampire);
                 break;
         }
+    }
+
+    private void LoadEnemy(string nameEnemy)
+    {
+        enemyRef = Resources.Load(nameEnemy);
     }
 
     private void Update()

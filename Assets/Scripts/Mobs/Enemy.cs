@@ -69,8 +69,86 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Transform firePosition;
     private UnityEngine.Object bulletPre;
     private GameObject bullet;
+    [HideInInspector] public int layerMaskOnlyPlayer = 1 << 8;
     #endregion
-    private void Awake()
+
+    private void Start()
+    {
+        GenerationRand();
+        TypeDropItem();
+        InstHealthValues();
+        MiliEnemy();
+        RangeEnemy();
+        InstValues();
+        InvokeEvent();
+    }
+    
+    private void InvokeEvent()
+    {
+        Event.SendEnemy(gameObject);
+        Event.SendInstIndexEnemy();
+    }
+
+    private void InstValues()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        Physics2D.queriesStartInColliders = false;
+    }
+
+    private void InstHealthValues()
+    {
+        GetComponent<Health>().armor = armor;
+        GetComponent<Health>().maxHealth = maxHeathl;
+        GetComponent<Health>().resistance = resistiance;
+        GetComponent<Health>().spike = spike;
+        GetComponent<Health>().vampirizme = vampirism;
+    }
+
+    private void MiliEnemy()
+    {
+        if (typeSpecial == TypeEnemySpecial.normal || typeSpecial == TypeEnemySpecial.knight || typeSpecial == TypeEnemySpecial.vampir)
+        {
+            sword.GetComponent<DamageObject>().damage = damage;
+        }
+    }
+
+    private void RangeEnemy()
+    {
+        if (typeSpecial == TypeEnemySpecial.sniper || typeSpecial == TypeEnemySpecial.magic)
+        {
+            BulletType();
+            InstDamageValues();
+        }
+    }
+
+    private void InstDamageValues()
+    {
+        bulletPre.GetComponent<DamageObject>().damage = damage;
+        bulletPre.GetComponent<DamageObject>().poison = poison;
+        bulletPre.GetComponent<DamageObject>().fire = fire;
+        bulletPre.GetComponent<DamageObject>().electric = electric;
+        bulletPre.GetComponent<DamageObject>().valuePoison = valuePoison;
+        bulletPre.GetComponent<DamageObject>().timePoison = timePoison;
+        bulletPre.GetComponent<DamageObject>().fireDamage = fireDamage;
+        bulletPre.GetComponent<DamageObject>().timerElectric = timerElectric;
+        bulletPre.GetComponent<DamageObject>().valueElectric = valueElectric;
+        bullet = (GameObject)bulletPre;
+    }
+
+    private void BulletType()
+    {
+        if (typeSpecial == TypeEnemySpecial.magic)
+        {
+            bulletPre = Resources.Load("fireBlast");
+        }
+        if (typeSpecial == TypeEnemySpecial.sniper)
+        {
+            bulletPre = Resources.Load("arrow");
+        }
+    }
+
+    private void GenerationRand()
     {
         if (randMonstr)
         {
@@ -83,51 +161,9 @@ public class Enemy : MonoBehaviour
         }
         else if (!randMonstr)
         {
-
-        }
-        TypeDropItem();
-        GetComponent<Health>().armor = armor;
-        GetComponent<Health>().maxHealth = maxHeathl;
-        GetComponent<Health>().resistance = resistiance;
-        GetComponent<Health>().spike = spike;
-        GetComponent<Health>().vampirizme = vampirism;
-        if (typeSpecial == TypeEnemySpecial.normal || typeSpecial == TypeEnemySpecial.knight || typeSpecial == TypeEnemySpecial.vampir)
-        {
-           sword.GetComponent<DamageObject>().damage = damage;
-        }
-        if (typeSpecial == TypeEnemySpecial.sniper || typeSpecial == TypeEnemySpecial.magic)
-        {
-            if(typeSpecial == TypeEnemySpecial.magic)
-            {
-                bulletPre = Resources.Load("fireBlast");
-            }
-            if (typeSpecial == TypeEnemySpecial.sniper)
-            {
-                bulletPre = Resources.Load("arrow");
-            }
-            bulletPre.GetComponent<DamageObject>().damage = damage;
-            bulletPre.GetComponent<DamageObject>().poison = poison;
-            bulletPre.GetComponent<DamageObject>().fire = fire;
-            bulletPre.GetComponent<DamageObject>().electric = electric;
-            bulletPre.GetComponent<DamageObject>().valuePoison = valuePoison;
-            bulletPre.GetComponent<DamageObject>().timePoison = timePoison;
-            bulletPre.GetComponent<DamageObject>().fireDamage = fireDamage;
-            bulletPre.GetComponent<DamageObject>().timerElectric = timerElectric;
-            bulletPre.GetComponent<DamageObject>().valueElectric = valueElectric;
-            bullet = (GameObject)bulletPre;
+            return;
         }
     }
-
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-        Event.SendEnemy(gameObject);
-        Event.SendInstIndexEnemy();
-        Physics2D.queriesStartInColliders = false;
-    }
-
-    
 
     private void FixedUpdate()
     {
@@ -135,49 +171,41 @@ public class Enemy : MonoBehaviour
         if (typeSpecial != TypeEnemySpecial.sniper && typeSpecial != TypeEnemySpecial.magic)
         {
             TimerAttack();
-            //    Debug.Log("activ");
             GetComponent<MiliENemy>().FlipEnemyTrigger();
             GetComponent<MiliENemy>().AttackRay();
             GetComponent<MiliENemy>().FlipEnemy();
-            if (moov)
-            {
-                Character.Run(rb, speed, direction);
-            }
-            else if (!moov)
-            {
-                Character.Run(rb, 0f, direction);
-            }                   
+            EnemyMoov();
         } 
         else if(typeSpecial == TypeEnemySpecial.sniper || typeSpecial == TypeEnemySpecial.magic)
         {
             TimerAttackRang();
-            //Debug.Log("activ");
             GetComponent<RangeEnemy>().AttackRay();
+        }
+    }
+
+    private void EnemyMoov()
+    {
+        if (moov)
+        {
+            Character.Run(rb, speed, direction);
+        }
+        else if (!moov)
+        {
+            Character.Run(rb, 0f, direction);
         }
     }
 
     #region Cntr
     
-   
-
     public void Attack()
     {
         if (attack)
         {
-            // anim.SetBool(MeaningString.attack, true);
             anim.SetTrigger(MeaningString.attack);
             attackTimer = attackTimerMax;
             attack = false;
-            //Invoke("StopAttack", 0.1f);
-            Debug.Log("qqq");
         }
     }
-
-   /* private void StopAttack()
-    {
-        Debug.Log("StopAttack");
-        anim.SetBool(MeaningString.attack, false);
-    }*/
 
     private void TimerAttack()
     {
@@ -205,27 +233,13 @@ public class Enemy : MonoBehaviour
 
     public void RangAttack()
     {
-        Debug.Log("StartAttackOne");
         if (attack)
         {
-            Debug.Log("StartAttack");
             anim.SetBool(MeaningString.attack, true);
-            //bullet.GetComponent<Bullet>().direction = facingRight;
-          /*  if (facingRight == true)
-            {
-                bullet.GetComponent<Bullet>().transform.Rotate(0f, 180f, 0f);
-                Debug.Log("180f");
-            }
-            else if (facingRight == false)
-            {
-                bullet.GetComponent<Bullet>().transform.Rotate(0f, 0f, 0f);
-                Debug.Log("0f");
-            }*/
             Character.Shoot(bullet, firePosition);
             attackTimerRang = attackTimerMaxRang;
             attack = false;
             Debug.Log(attack);
-            Invoke("StopAttack", 0.1f);
         }
     }
 
@@ -234,7 +248,6 @@ public class Enemy : MonoBehaviour
     #region InstallRandStatEnemy
     private void InstallStatTypeEnemy()
     {
-     //   Debug.Log("7");
         switch (typeSpecial)
         {
             case TypeEnemySpecial.normal:
@@ -323,7 +336,6 @@ public class Enemy : MonoBehaviour
 
     private (float, float, float, float) InstallStat()
     {
-    //    Debug.Log("6");
         float damage = 10f, armor = 0f, health = 60f, resistiance = 0f;
         damage = (damage + lvlMonstr) * lvlMonstr * coefA;
         armor = (armor + lvlMonstr + 3) * lvlMonstr * coefA;
@@ -334,28 +346,22 @@ public class Enemy : MonoBehaviour
 
     private void TypeDropItem()
     {
-      //  Debug.Log("5");
-      //  Debug.Log(dropItemPre.Length);
         int i = ga.Rand(dropItemPre.Length);
-      //  Debug.Log(i);
         dropItem = dropItemPre[i];
     }
 
     private int ValueXp()
     {
-     //   Debug.Log("4");
         return ga.Rand(lvlMonstr * 2 * coefA, lvlMonstr * 4 * coefA);
     }
      
     private int ValueCountSouls()
     {
-    //    Debug.Log("3");
         return ga.Rand(lvlMonstr * coefA, (lvlMonstr + 10) * coefA);
     }
 
     private int RandLevelMonstr()
     {
-    //    Debug.Log("2");
         int min = 0, max = 0;
         if (levelLocation == 1)
         {
@@ -371,7 +377,6 @@ public class Enemy : MonoBehaviour
 
     private void CoefTypeEnemy()
     {
-     //   Debug.Log("1");
         switch (typeEnemy)
         {
             case TypeEnemy.normal:
@@ -418,9 +423,7 @@ public class Enemy : MonoBehaviour
             max = lvlMonstr + 1;
         }
         return (min, max);
-    }
-
-    
+    }    
 }
 
 public enum TypeEnemy

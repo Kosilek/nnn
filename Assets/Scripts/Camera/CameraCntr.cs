@@ -16,16 +16,20 @@ public class CameraCntr : MonoBehaviour
 
     public void FindPlayer(bool playerIsLeft)
     {
-     //   Debug.Log($"player = = {player.position}");
         lastX = Mathf.RoundToInt(player.position.x);
         if (playerIsLeft)
         {
-            transform.position = new Vector3(player.position.x - offset.x, player.position.y - offset.y, transform.position.z);
+            CameraMoov(-1);
         }
         else
         {
-            transform.position = new Vector3(player.position.x + offset.x, player.position.y + offset.y, transform.position.z);
+            CameraMoov(1);
         }
+    }
+
+    private void CameraMoov(int d)
+    {
+        transform.position = new Vector3(player.position.x + d * offset.x, player.position.y + d * offset.y, transform.position.z);
     }
 
     private void Update()

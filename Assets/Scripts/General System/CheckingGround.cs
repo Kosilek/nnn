@@ -10,29 +10,25 @@ public class CheckingGround : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.GetComponent<Tilemap>() != null)
-        {
-            if (isPlayer)
-            {
-                mob.GetComponent<Player>().isGround = true;
-            } else if (!isPlayer)
-            {
-                // mob.GetComponent<Enemy>().isGround = true;
-            }
-        }
+        CheckGround(collision, true);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
+    {
+        CheckGround(collision, false);
+    }
+
+    private void CheckGround(Collider2D collision, bool check)
     {
         if (collision.GetComponent<Tilemap>() != null)
         {
             if (isPlayer)
             {
-                mob.GetComponent<Player>().isGround = false;
+                mob.GetComponent<Player>().isGround = check;
             }
             else if (!isPlayer)
             {
-                // mob.GetComponent<Enemy>().isGround = false;
+                // mob.GetComponent<Enemy>().isGround = check;
             }
         }
     }

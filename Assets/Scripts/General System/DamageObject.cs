@@ -32,13 +32,10 @@ public class DamageObject : MonoBehaviour
     #endregion
     public bool detroyOnDamage;
     public bool ignor;
+    [Tooltip("Vampirism = true")]
     [SerializeField] private GameObject mob;
+    [Tooltip("Attack with sword")]
     [SerializeField] private bool triggerDamage;
-
-    private void Awake()
-    {
-       // Event.OnReDamage.AddListener(ReDamage);
-    }
 
     private void Start()
     {
@@ -84,6 +81,12 @@ public class DamageObject : MonoBehaviour
     #region ActionDamage
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Damage(other);
+        DestroyObject(other);
+    }
+
+    private void Damage(Collider2D other)
+    {
         if (other.GetComponent<Health>())
         {
             if (poison != false || fire != false || electric != false)
@@ -92,17 +95,20 @@ public class DamageObject : MonoBehaviour
             }
             if (damage >= 0)
             {
-                if(mob != null)
+                if (mob != null)
                 {
                     if (mob.GetComponent<Health>().vampirizme > 0f)
                     {
                         mob.GetComponent<Health>().Vampirism(damage);
                     }
-                }              
+                }
                 other.GetComponent<Health>().TakeDamage(damage, other.gameObject, other.gameObject.GetComponent<Health>().anim);
             }
-            Debug.Log("Attack");
         }
+    }
+
+    private void DestroyObject(Collider2D other)
+    {
         if (other.GetComponent<Collider2D>() != null)
         {
             if (detroyOnDamage)
@@ -114,13 +120,13 @@ public class DamageObject : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<Enemy>())
-        {
-            if (ignor)
-            {
-                gameObject.GetComponent<Collider2D>().isTrigger = true;
-            }
-        }
+        IgnorObject(collision);
+        Damage(collision);
+        DestroyObject(collision);
+    }
+
+    private void Damage(Collision2D collision)
+    {
         if (triggerDamage == true)
         {
             return;
@@ -131,10 +137,23 @@ public class DamageObject : MonoBehaviour
             {
                 SwitchTypeMagic(poison, fire, electric, collision);
                 collision.gameObject.GetComponent<Health>().TakeDamage(damage, collision.gameObject, collision.gameObject.GetComponent<Health>().anim);
-                Debug.Log("Attack");
             }
         }
-        
+    }
+
+    private void IgnorObject(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<Enemy>())
+        {
+            if (ignor)
+            {
+                gameObject.GetComponent<Collider2D>().isTrigger = true;
+            }
+        }
+    }
+
+    private void DestroyObject(Collision2D collision)
+    {
         if (collision.gameObject.GetComponent<Collider2D>() != null)
         {
             if (detroyOnDamage)
@@ -143,7 +162,13 @@ public class DamageObject : MonoBehaviour
             }
         }
     }
+
     private void OnTriggerExit2D(Collider2D collision)
+    {
+        IgnorObject(collision);
+    }
+
+    private void IgnorObject(Collider2D collision)
     {
         if (collision.gameObject.GetComponent<Enemy>())
         {
@@ -153,6 +178,7 @@ public class DamageObject : MonoBehaviour
             }
         }
     }
+
     #endregion
     public void ReDamage(float oldDamage, float newDamage)
     {

@@ -8,10 +8,16 @@ public class RangeEnemy : MonoBehaviour
     [SerializeField] private float timerFlipMax;
     RaycastHit2D attackRay;
     [SerializeField] private float attackRayDistance;
-    int layerMaskOnlyPlayer = 1 << 8;
+    private Enemy enemy;
 
     private void Start()
     {
+        InstValues();
+    }
+
+    private void InstValues()
+    {
+        enemy = GetComponent<Enemy>();
         timerFlip = timerFlipMax;
     }
 
@@ -22,34 +28,12 @@ public class RangeEnemy : MonoBehaviour
 
     public void AttackRay()
     {
-        //if (GetComponent<Enemy>().facingRight == true)
-      //  {
-            attackRay = Physics2D.Raycast(transform.position, transform.localScale.x * Vector2.right, attackRayDistance, layerMaskOnlyPlayer);
-      //  }
-      //  else if (GetComponent<Enemy>().facingRight == false)
-      //  {
-       //     attackRay = Physics2D.Raycast(transform.position, transform.localScale.x * Vector2.left, attackRayDistance, layerMaskOnlyPlayer);
-      //  }
+        attackRay = Physics2D.Raycast(transform.position, transform.localScale.x * Vector2.right, attackRayDistance, enemy.layerMaskOnlyPlayer);
+
         if(attackRay)
         {
-           // if (attackRay.collider.GetComponent<Player>())
-           // {
-                GetComponent<Enemy>().RangAttack();
-            Debug.Log("attack");
-           // }
+            GetComponent<Enemy>().RangAttack();
         }
-      // if (attackRay)
-      //  {
-        //    Debug.Log($"attackRay = {attackRay.collider}");
-           /* if (attackRay.collider.GetComponent<Player>())
-            {
-                GetComponent<Enemy>().Attack();
-            }
-        }
-        else if (!attackRay)
-        {
-            GetComponent<Enemy>().moov = true;*/
-      //  }
     }
 
     private void TimerFlip()
@@ -71,6 +55,5 @@ public class RangeEnemy : MonoBehaviour
         Gizmos.color = Color.red;
 
         Gizmos.DrawLine(transform.position, transform.position + Vector3.right * attackRayDistance);
-     // Gizmos.DrawLine(transform.position, transform.position + Vector3.left * attackRayDistance);
     }
 }

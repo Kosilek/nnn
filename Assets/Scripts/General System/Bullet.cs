@@ -10,10 +10,15 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
+        InstValues();
+    }
+
+    private void InstValues()
+    {
         if (bName == "fireBlast")
-        transform.Rotate(0f, 180f, 0f);    
+            transform.Rotate(0f, 180f, 0f);
         if (bName == "arrow")
-        transform.Rotate(0f, 0f, 90f);
+            transform.Rotate(0f, 0f, 90f);
     }
 
     void Update()
@@ -22,16 +27,6 @@ public class Bullet : MonoBehaviour
             transform.position += transform.right * speedMove * Time.deltaTime;
         if (bName == "arrow")
             transform.position += transform.up * speedMove * Time.deltaTime;
-        //    if (direction == true)
-        //    {
-
-        /*   }
-           if (direction == false)
-           {
-               transform.position += -1 * transform.right * speedMove * Time.deltaTime;
-           }
-
-       }*/
     }
 
 }

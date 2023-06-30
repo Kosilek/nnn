@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class CanvasManager : Singleton<CanvasManager>
 {
-    //переменные панели статистики
+    [Header("Panel Statistics")]
     public static int strenght = 0;
     public static int dexterity = 0;
     public static int intelligance = 0;
@@ -12,17 +12,41 @@ public class CanvasManager : Singleton<CanvasManager>
     [SerializeField] private Text intelligencePoint;
     [SerializeField] private Text lvlTxt;
     [SerializeField] private Text freeHarTxt;
-    //переменные текста на канвасе
+    [Header("Text Canvas")]
     [SerializeField] private Text soulsCoins;
-    //переменные таймеров
+    [Header("Timer")]
     [SerializeField] private float maxAttackDelay;
     private float timerAttackDelay;
     public Money money;
 
     protected override void Awake()
+    {       
+        base.Awake();
+    }
+
+    private void Start()
+    {
+        AddEvent();
+        InstValues();
+    }
+
+    private void InstValues()
     {
         money = GetComponent<Money>();
-        base.Awake();
+        InstText();
+    }
+
+    private void InstText()
+    {
+        strenghtPoint.text = strenght.ToString();
+        dexterityPoint.text = dexterity.ToString();
+        intelligencePoint.text = intelligance.ToString();
+        freeHarTxt.text = freeHar.ToString();
+        lvlTxt.text = ("lvl " + Player.lvl.ToString());
+    }
+
+    private void AddEvent()
+    {
         Event.OnDispSoulCoin.AddListener(DispCoin);
         Event.OnLvlUp.AddListener(lvlUp);
     }
@@ -31,15 +55,7 @@ public class CanvasManager : Singleton<CanvasManager>
     {
         soulsCoins.text = ("Souls: " + money.countSouls.ToString());
     }
-
-    private void Start()
-    {
-        strenghtPoint.text = strenght.ToString();
-        dexterityPoint.text = dexterity.ToString();
-        intelligencePoint.text = intelligance.ToString();
-        lvlTxt.text = ("lvl " + Player.lvl.ToString());
-    }
-
+ 
     private void FixedUpdate()
     {
         TimerAttack();
@@ -72,8 +88,7 @@ public class CanvasManager : Singleton<CanvasManager>
         {
             Player.player.GetComponent<Player>().Attack();
             timerAttackDelay = maxAttackDelay;
-        }
-        
+        }       
     }
 
     private void TimerAttack()
@@ -84,21 +99,14 @@ public class CanvasManager : Singleton<CanvasManager>
         }
     }
 
-    public void StopAttack()
-    {
-        Player.player.GetComponent<Player>().StopAttack();
-    }
+    #endregion 
 
-    #endregion
-
-    
+    #region StatisticsPlayer
     public void strenghtPlus()
     {
         if(freeHar > 0)
         {
-            strenght++;
-            FreeHarMinus();
-            strenghtPoint.text = strenght.ToString();
+            PlusStat(ref strenght, strenghtPoint);
             Event.SendStrenght();
         }      
     }
@@ -107,9 +115,7 @@ public class CanvasManager : Singleton<CanvasManager>
     {
         if (freeHar > 0)
         {
-            dexterity++;
-            FreeHarMinus();
-            dexterityPoint.text = dexterity.ToString();
+            PlusStat(ref dexterity, dexterityPoint);
             Event.SendDexterity();
         }
     }
@@ -118,11 +124,17 @@ public class CanvasManager : Singleton<CanvasManager>
     {
         if (freeHar > 0)
         {
-            intelligance++;
-            FreeHarMinus();
-            intelligencePoint.text = intelligance.ToString();
+            PlusStat(ref intelligance, intelligencePoint);
             Event.SendIntelligance();
         }
+    }
+
+    private void PlusStat(ref int stat, Text statText)
+    {
+        stat++;
+        Debug.Log(stat);
+        FreeHarMinus();
+        statText.text = stat.ToString();
     }
 
     private void FreeHarMinus()
@@ -137,4 +149,5 @@ public class CanvasManager : Singleton<CanvasManager>
         freeHarTxt.text = freeHar.ToString();
         lvlTxt.text = ("lvl " + Player.lvl.ToString());
     }
+    #endregion
 }

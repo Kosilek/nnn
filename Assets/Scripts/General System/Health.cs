@@ -45,9 +45,19 @@ public class Health : MonoBehaviour
 
     private void Start()
     {
+        InstValues();
+        AddEvent();
+    }
+
+    private void InstValues()
+    {
         health = maxHealth;
         timerStartElectric = 0f;
         timerStartPoison = 0f;
+    }
+
+    private void AddEvent()
+    {
         Event.OnReArmor.AddListener(ReArmor);
         Event.OnReHealth.AddListener(ReHealth);
         Event.OnReResistiance.AddListener(ReResistiance);
@@ -173,8 +183,7 @@ public class Health : MonoBehaviour
     {
         if (health > 0)
         {
-            //        anim.SetBool(MeaningString.hit, true);
-            //       Invoke(MeaningString.notHit, 0.6f);
+            //        anim.SetTrigger(MeaningString.hit);
         }
         if (health <= 0)
         {
@@ -217,11 +226,6 @@ public class Health : MonoBehaviour
         gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         anim.SetInteger(MeaningString.state, 7);
         Destroy(gameObject, 1f);
-    }
-
-   private void NotHit()
-    {
-     //   anim.SetBool(MeaningString.hit, false);
     }
 
     #region EventReIten
