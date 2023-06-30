@@ -6,6 +6,7 @@ public class Coins : MonoBehaviour
 {
     private Animator anim;
     [SerializeField] private int coins;
+    [SerializeField] private AudioSource effectsCoins;
     private void Start()
     {
         InstValues();
@@ -22,5 +23,9 @@ public class Coins : MonoBehaviour
         ObjectManager.Destroy(gameObject, anim);
     }
 
+    public void PlayEffects()
+    {
+        effectsCoins.Play();
+    }
 
 }

@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
     public static int lvl = 1;
     public int limitationXpLvl;
 
+    [SerializeField] private AudioSource effectsAttack;
+
     private void Awake()
     {
         InstValuesAwake();
@@ -104,6 +106,7 @@ public class Player : MonoBehaviour
     public void Attack()
     {
         anim.SetTrigger(MeaningString.attack);
+        effectsAttack.Play();
     }
     #endregion
 
@@ -125,7 +128,15 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        UpCoins(collision);
+    }
+
+    private void UpCoins(Collider2D collision)
+    {
         if (collision.GetComponent<Coins>() != null)
+        {
             collision.GetComponent<Coins>().AddCoinsSouls();
+            collision.GetComponent<Coins>().PlayEffects();
+        }
     }
 }
