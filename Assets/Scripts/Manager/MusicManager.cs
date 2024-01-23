@@ -6,8 +6,12 @@ using UnityEngine.Audio;
 
 public class MusicManager : MonoBehaviour
 {
-    private float music;
+    public float music;
     [SerializeField] private AudioMixerGroup mixer;
+
+    public float volume;
+
+    public bool isBool;
     private void Start()
     {
         InstValues();
@@ -24,4 +28,10 @@ public class MusicManager : MonoBehaviour
     {
         mixer.audioMixer.SetFloat("musicVolume", Mathf.Lerp(-80, 0, music));
     }
+
+    private void Update()
+    {
+        isBool = mixer.audioMixer.GetFloat("musicVolume", out music);
+    }
+
 }
